@@ -1,4 +1,4 @@
-model_config = {
+{
     "model_name": "",
     "pre_training_weights": "",
     "epochs": "",
