@@ -17,7 +17,7 @@ model = ResNet50(weights='imagenet', include_top=True)
 # load the images
 images = []
 raw_img = []
-path_folder = import_img_name_from_files("../../data/processed/Maya/Face/face_invariant")
+path_folder = import_img_name_from_files("../../data_processing/processed/Maya/Face/face_invariant")
 prediction = []
 for path_img in sorted(path_folder):
     x = image.load_img(path_img, target_size=(224, 224))

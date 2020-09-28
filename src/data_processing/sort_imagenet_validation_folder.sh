@@ -12,4 +12,4 @@ while read -r p; do
     mv $folder_path'validation/ILSVRC2012_val_'$tmp_idx'.JPEG' $folder_path'validation/'$p
     echo $p $tmp_idx
     ((index++))
-done < $folder_path'ILSVRC2012_devkit_t12/data/ILSVRC2012_validation_ground_truth.txt'
+done < $folder_path'ILSVRC2012_devkit_t12/data_processing/ILSVRC2012_validation_ground_truth.txt'

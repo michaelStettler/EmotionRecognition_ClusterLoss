@@ -162,7 +162,7 @@ def ResNet50v2(include_top=True, weights='imagenet',
     `image_data_format='channels_last'` in your Keras config
     at ~/.keras/keras.json.
     The model and the weights are compatible with both
-    TensorFlow and Theano. The data format
+    TensorFlow and Theano. The data_processing format
     convention used by the model is the one
     specified in your Keras config file.
     # Arguments
@@ -175,8 +175,8 @@ def ResNet50v2(include_top=True, weights='imagenet',
             to use as image input for the model.
         input_shape: optional shape tuple, only to be specified
             if `include_top` is False (otherwise the input shape
-            has to be `(224, 224, 3)` (with `channels_last` data format)
-            or `(3, 224, 224)` (with `channels_first` data format).
+            has to be `(224, 224, 3)` (with `channels_last` data_processing format)
+            or `(3, 224, 224)` (with `channels_first` data_processing format).
             It should have exactly 3 inputs channels,
             and width and height should be no smaller than 197.
             E.g. `(200, 200, 3)` would be one valid value.

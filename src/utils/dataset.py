@@ -59,7 +59,7 @@ def process_file(args):
         #         # todo set the final output
         #         img = scipy.ndimage.imread(args[1] + row[0])
         #         img = scipy.misc.imresize(img, [args[3], args[4]])
-        #         data.append(img)
+        #         data_processing.append(img)
         #
         #         if args[2]:  # extended
         #             labels.append(row[1:5] + row[5].split(';') + row[6:])
@@ -131,14 +131,14 @@ if __name__ == '__main__':
     #
     # for file in files:
     #     # training
-    #     data, labels = load_dataset(file, path + 'Manually_Annotated_Images/', 224, 224)
-    #     # # data, labels = load_extended_dataset(file, path + 'Manually_Annotated_Images/')
-    #     print("print data shape", np.shape(data))
+    #     data_processing, labels = load_dataset(file, path + 'Manually_Annotated_Images/', 224, 224)
+    #     # # data_processing, labels = load_extended_dataset(file, path + 'Manually_Annotated_Images/')
+    #     print("print data_processing shape", np.shape(data_processing))
     #     print("print labels shape", np.shape(labels))
     #
     # # validation
-    # # data, labels = process_file([path + val_file_name, path + 'Manually_Annotated_Images/', False])
-    # # data, labels = load_categorical_dataset(path + val_file_name, path + 'Manually_Annotated_Images/', keep_headers=False)
+    # # data_processing, labels = process_file([path + val_file_name, path + 'Manually_Annotated_Images/', False])
+    # # data_processing, labels = load_categorical_dataset(path + val_file_name, path + 'Manually_Annotated_Images/', keep_headers=False)
     #
     #
     # # list all the output files

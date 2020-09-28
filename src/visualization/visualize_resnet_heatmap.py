@@ -70,7 +70,7 @@ def plot_ResNet_CAM(img_path, ax, model, all_amp_layer_weights):
 
 if __name__ == '__main__':
     ResNet_model, all_amp_layer_weights = get_ResNet()
-    img_path = '../../data/raw/Monkey/MonkeyHead.jpg'
+    img_path = '../../data_processing/raw/Monkey/MonkeyHead.jpg'
     fig, ax = plt.subplots()
     CAM = plot_ResNet_CAM(img_path, ax, ResNet_model, all_amp_layer_weights)
     # plt.show()

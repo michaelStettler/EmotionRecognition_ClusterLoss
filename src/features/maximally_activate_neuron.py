@@ -143,7 +143,7 @@ if __name__ == "__main__":
 
     images = []
     # raw_img = ['results/macaque_373_1.png', 'results/macaque_373_2.png']
-    path_folder = import_img_name_from_files("../../data/processed/Maya/Face/face_invariant")
+    path_folder = import_img_name_from_files("../../data_processing/processed/Maya/Face/face_invariant")
     paths = []
     for path_img in sorted(path_folder):
         x = image.load_img(path_img, target_size=(224, 224))

@@ -7,7 +7,7 @@ import shutil, os
 from tqdm import tqdm
 
 path = '../../../../Downloads/AffectNet/'  # computer a
-# path = '../../../../media/data/AffectNet/'  # computer b
+# path = '../../../../media/data_processing/AffectNet/'  # computer b
 # path = '../../../AffectNet/'  # computer m
 
 # name = 'small'

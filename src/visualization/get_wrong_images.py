@@ -21,12 +21,12 @@ np.set_printoptions(precision=0, linewidth=200, suppress=True)
 
 def get_csv_generator(data, model_params, data_augmentation, task):
     # always validate on the whole set
-    # df_val = pd.read_csv(data['data_path'] + 'validation_modified.csv')
+    # df_val = pd.read_csv(data_processing['data_path'] + 'validation_modified.csv')
     print("****************************")
     print("Need to change, only for testing purpose yet")
     print("****************************")
     df_val = pd.read_csv(data['data_path'] + 'validation_one_batch.csv')
-    # get the data generator (from parameters.py)
+    # get the data_processing generator (from parameters.py)
     val_datagen = get_datagen(data_augmentation, data, train=False)
 
     if task == 'classification':
@@ -89,7 +89,7 @@ def get_wrong_images(model_name, version, computer, dataset, da, run, task):
                   optimizer=keras.optimizers.SGD(lr=model_params['lr'][0], momentum=0.9, nesterov=True),
                   metrics=['mae', 'categorical_accuracy'])
 
-    # load the data
+    # load the data_processing
     if 'AFFECTNET' in data['dataset'].upper():
         val_generator, df_val = get_csv_generator(data, model_params, da, task)
     else:
@@ -136,7 +136,7 @@ if __name__ == '__main__':
                         help="select the kinf of learning, classification or regression")
     parser.add_argument("-da", "--data_augmentation",
                         default='2',
-                        help="select which data augmentation to perform")
+                        help="select which data_processing augmentation to perform")
     args = parser.parse_args()
 
     model_name = args.model

@@ -46,7 +46,7 @@ def get_generator(data, model_params, data_augmentation, task, validation_only=F
 
 
 def get_data_generator(x_train, y_train, x_val, y_val, data, model_params, data_augmentation, validation_only):
-    # get the data generator
+    # get the data_processing generator
     if not validation_only:
         train_datagen = get_datagen(data_augmentation, data, train=True)
     val_datagen = get_datagen(data_augmentation, data, train=False)
@@ -81,7 +81,7 @@ def get_auto_generator(data, model_params, data_augmentation, validation_only):
     if not os.path.isdir(validation_data_dir):
         raise ValueError('Validation directory does not exist', validation_data_dir)
 
-    # get the data generator
+    # get the data_processing generator
     if not validation_only:
         train_datagen = get_datagen(data_augmentation, data, train=True)
     val_datagen = get_datagen(data_augmentation, data, train=False)
@@ -110,7 +110,7 @@ def get_auto_generator(data, model_params, data_augmentation, validation_only):
 
 
 def get_csv_generator(data, model_params, data_augmentation, validation_only, task):
-    # get the data generator
+    # get the data_processing generator
     if not validation_only:
         train_datagen = get_datagen(data_augmentation, data, train=True)
     val_datagen = get_datagen(data_augmentation, data, train=False)
@@ -121,7 +121,7 @@ def get_csv_generator(data, model_params, data_augmentation, validation_only, ta
 
     # affect net comes with the subfolder path, we need to remove it in order for flow_from_dataframe to work
     # Use this if we want to use the given training.csv file
-    # if data['dataset'] == 'affectnet':
+    # if data_processing['dataset'] == 'affectnet':
         # for index, row in df_train.iterrows():
         # df_train.at[index, 'subDirectory_filePath'] = row['subDirectory_filePath'].split('/')[1]
         # for index, row in df_val.iterrows():
@@ -163,7 +163,7 @@ def get_csv_generator(data, model_params, data_augmentation, validation_only, ta
         #save_to_dir='test_val'
     )
 
-    # print("fit data")
+    # print("fit data_processing")
     # train_datagen.fit(train_generator)
     # val_datagen.fit(validation_generator)
 
@@ -288,7 +288,7 @@ def get_datagen(data_augmentation, data, train=True):
                 validation_split=0.0)
 
     else:
-        raise ValueError('Wrong data augmentation selection - %s doest not exist' % data_augmentation)
+        raise ValueError('Wrong data_processing augmentation selection - %s doest not exist' % data_augmentation)
 
     return datagen
 

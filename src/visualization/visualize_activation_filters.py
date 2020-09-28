@@ -18,7 +18,7 @@ def find_max_value(data):
     return max_values
 
 
-# normalize the data by a certain value
+# normalize the data_processing by a certain value
 def normalize(data, val):
     normalized = np.array(data)
     for img_idx in range(np.shape(data)[0]):
@@ -51,7 +51,7 @@ def normalize_per_filter(data):
 def visualize_filters(data, name=""):
     for layer_idx in range(np.shape(activation_values)[1]):
     # for layer_idx in [10]:
-        # print("layer_idx", layer_idx, "num_filters", np.shape(data[0, layer_idx])[0])
+        # print("layer_idx", layer_idx, "num_filters", np.shape(data_processing[0, layer_idx])[0])
         images = []
         for filter_idx in range(np.shape(data[0, layer_idx])[0]):
             for img_idx in range(np.shape(data)[0]):

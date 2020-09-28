@@ -30,18 +30,18 @@ from keras.layers import BatchNormalization
 from keras import regularizers
 from keras.preprocessing.image import ImageDataGenerator
 
-DATASET_PATH = '../../../data/raw/Cifar-10/'
+DATASET_PATH = '../../../data_processing/raw/Cifar-10/'
 BATCH_SIZE = 128
 
 
 def load_batch(fpath, label_key='labels'):
-    """Internal utility for parsing CIFAR data.
+    """Internal utility for parsing CIFAR data_processing.
     # Arguments
         fpath: path the file to parse.
-        label_key: key for label data in the retrieve
+        label_key: key for label data_processing in the retrieve
             dictionary.
     # Returns
-        A tuple `(data, labels)`.
+        A tuple `(data_processing, labels)`.
     """
     with open(fpath, 'rb') as f:
         if sys.version_info < (3,):
@@ -53,7 +53,7 @@ def load_batch(fpath, label_key='labels'):
             for k, v in d.items():
                 d_decoded[k.decode('utf8')] = v
             d = d_decoded
-    data = d['data']
+    data = d['data_processing']
     labels = d[label_key]
 
     data = data.reshape(data.shape[0], 3, 32, 32)
@@ -65,8 +65,8 @@ def load_data():
         # Returns
             Tuple of Numpy arrays: `(x_train, y_train), (x_test, y_test)`.
         """
-    file_path = '../../../data/raw/Cifar-10/cifar-10-python.tar'
-    dir_path = '../../../data/raw/Cifar-10/'
+    file_path = '../../../data_processing/raw/Cifar-10/cifar-10-python.tar'
+    dir_path = '../../../data_processing/raw/Cifar-10/'
 
     open_fn = tarfile.open
     is_match_fn = tarfile.is_tarfile
@@ -86,7 +86,7 @@ def load_data():
                 raise
 
     else:
-        print("Problem with data")
+        print("Problem with data_processing")
 
     num_train_samples = 50000
 
@@ -331,7 +331,7 @@ if __name__ == '__main__':
     print("Own implementation of ResNet 32 using cifar-10 dataset")
     start = datetime.datetime.now()
     print("started at:", start)
-    # load the data into numpy array
+    # load the data_processing into numpy array
     (x_train, y_train), (x_test, y_test) = load_data()
     print("loaded cifar 10 dataset")
 
@@ -344,7 +344,7 @@ if __name__ == '__main__':
     # print("x_test shape", np.shape(x_test))
     # print("y_test shape", np.shape(y_test))
 
-    # data augmentation
+    # data_processing augmentation
     datagen = ImageDataGenerator(
         featurewise_center=False,  # initially True
         featurewise_std_normalization=False,  # initially True

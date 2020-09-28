@@ -61,10 +61,10 @@ def predict_DNN_SVM(model_weights_path, data_path, dataset_name, show=False):
     print("model loaded")
     print()
 
-    # load the data
-    print("------ load data ------")
+    # load the data_processing
+    print("------ load data_processing ------")
     data = load_data(data_path + dataset_name + '/')
-    print("data", np.shape(data))
+    print("data_processing", np.shape(data))
     print()
 
     # run the model

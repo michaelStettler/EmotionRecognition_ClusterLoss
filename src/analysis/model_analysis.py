@@ -35,11 +35,11 @@ def analyse_model(model_name='Simple',
     computer_params = load_computer_params(computer, model_params)
     data = load_dataset_params(dataset, model_params, computer_params)
 
-    # get validation data
-    print("data loading")
+    # get validation data_processing
+    print("data_processing loading")
     data_start_time = time.time()
     validation_generator = get_generator(data, model_params, da, task, validation_only=True)
-    print("done loading data (%.2fs)" % (time.time() - data_start_time))
+    print("done loading data_processing (%.2fs)" % (time.time() - data_start_time))
     print()
 
     # get training metrics
@@ -179,7 +179,7 @@ if __name__ == '__main__':
                         help="select the kind of learning, classification or regression")
     parser.add_argument("-da", "--data_augmentation",
                         default='0',
-                        help="select which data augmentation to perform")
+                        help="select which data_processing augmentation to perform")
     parser.add_argument("-cw", "--class_weights",
                         default=None,
                         help="select which class weights to set into the weighted loss")
@@ -215,7 +215,7 @@ if __name__ == '__main__':
     print()
     print("model:   ", model_name, " dataset:", dataset, "  task:", task)
     print("computer:", computer, "        run:", run, "  gpu:", gpus, "  version:", version, "  da:", da)
-    print("Weights:", weights)
+    print("weights:", weights)
     print()
     print("------------------------------------------------------------")
     print()
@@ -238,7 +238,7 @@ if __name__ == '__main__':
     print()
     print("model:   ", model_name, " dataset:", dataset, "  task:", task)
     print("computer:", computer, "        run:", run, "  gpu:", gpus, "  version:", version, "  da:", da)
-    print("Weights:", weights)
+    print("weights:", weights)
     print()
     print("------------------------------------------------------------")
     print()

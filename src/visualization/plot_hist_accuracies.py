@@ -44,7 +44,7 @@ def get_auto_generator(data, model_params, data_augmentation):
     else:
         data_dir = validation_data_dir
 
-    # get the data generator
+    # get the data_processing generator
     datagen = get_datagen(data_augmentation, data, train=False)
 
     generator = datagen.flow_from_directory(
@@ -61,12 +61,12 @@ def get_auto_generator(data, model_params, data_augmentation):
 
 def get_csv_generator(data, model_params, data_augmentation, task):
     if train:
-        # df_val = pd.read_csv(data['csv_train_file'], nrows=1)
+        # df_val = pd.read_csv(data_processing['csv_train_file'], nrows=1)
         df_val = pd.read_csv(data['csv_train_file'])
     else:
-        # df_val = pd.read_csv(data['data_path'] + 'validation_modified.csv')
+        # df_val = pd.read_csv(data_processing['data_path'] + 'validation_modified.csv')
         df_val = pd.read_csv(data['csv_val_file'])
-    # get the data generator (from parameters.py)
+    # get the data_processing generator (from parameters.py)
     val_datagen = get_datagen(data_augmentation, data, train=False)
 
     if task == 'classification':
@@ -139,7 +139,7 @@ def plot_accuracies(model_name, version, computer, dataset, da, run, task):
                   optimizer=keras.optimizers.SGD(lr=model_params['lr'][0], momentum=0.9, nesterov=True),
                   metrics=['mae', 'accuracy'])
 
-    # load the data
+    # load the data_processing
     if data['labels_type'] == 'csv':
         generator, df_val = get_csv_generator(data, model_params, da, task)
     else:
@@ -219,7 +219,7 @@ def plot_accuracies(model_name, version, computer, dataset, da, run, task):
     tot_img = np.sum(counting_tot)
     for i in range(data['n_classes']):
         accuracy += classes_accuracies[i] * counting_tot[i] / tot_img
-        # print(np.sum(classes_accuracies / data['n_classes']))
+        # print(np.sum(classes_accuracies / data_processing['n_classes']))
 
     print("Calculated accuracy", accuracy)
     print("tot_correct/tot_img = %.0f/%.0f = %.4f" % (tot_correct, tot_img, tot_correct / tot_img * 100), "%")
@@ -268,7 +268,7 @@ if __name__ == '__main__':
                         help="select the kinf of learning, classification or regression")
     parser.add_argument("-da", "--data_augmentation",
                         default='2',
-                        help="select which data augmentation to perform")
+                        help="select which data_processing augmentation to perform")
     args = parser.parse_args()
 
     model_name = args.model

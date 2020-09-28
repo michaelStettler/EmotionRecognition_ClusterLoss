@@ -127,7 +127,7 @@ def test_webcam():
     # initialize dlib's face detector (HOG-based) and then create
     # the facial landmark predictor
 
-    shape_predictor_path = '../../data/external/shape_predictor_68_face_landmarks.dat'
+    shape_predictor_path = '../../data_processing/external/shape_predictor_68_face_landmarks.dat'
     detector = dlib.get_frontal_face_detector()
     predictor = dlib.shape_predictor(shape_predictor_path)
 

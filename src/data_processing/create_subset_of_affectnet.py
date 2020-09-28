@@ -9,7 +9,7 @@ import numpy as np
 from tqdm import tqdm
 
 path = '../../../../Downloads/AffectNet/'  # computer a
-# path = '../../../../media/data/AffectNet/'  # computer b
+# path = '../../../../media/data_processing/AffectNet/'  # computer b
 # path = '../../../AffectNet/'  # computer m
 
 train_file_name = 'training_modified.csv'

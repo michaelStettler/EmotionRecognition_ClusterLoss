@@ -122,7 +122,7 @@ def label_monkey_emotions(joint_dist_files, input_files, output_dir, plot=False)
 
 
 if __name__ == '__main__':
-    data_path = '../../data/processed/MayaAnimation/'
+    data_path = '../../data_processing/processed/MayaAnimation/'
     # input_path = '../../../../../../michael/A634A95D34A930EB/Users/Michael.DESKTOP-11J049G/Documents/maya/projects/MonkeyHead_MayaProject/images/Fur_FullDetail/'
     input_path = '../../../maya/MonkeyHead_MayaProject/images/Fur_FullDetail/'
     print("list input path:", os.listdir(input_path))

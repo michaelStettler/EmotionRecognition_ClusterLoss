@@ -1,5 +1,5 @@
 """
-Modify the validation folder of imagenet from number to the synset name to match the training data
+Modify the validation folder of imagenet from number to the synset name to match the training data_processing
 """
 import os
 

@@ -36,8 +36,8 @@ layer_idx = -1
 model.layers[layer_idx].activation = activations.linear
 model = utils.apply_modifications(model)
 
-img_monkey1 = utils.load_img('../../data/raw/Monkey/Neutral_2.png', target_size=(224, 224))
-img_monkey2 = utils.load_img('../../data/raw/Monkey/OpenMouthThreat_2.png', target_size=(224, 224))
+img_monkey1 = utils.load_img('../../data_processing/raw/Monkey/Neutral_2.png', target_size=(224, 224))
+img_monkey2 = utils.load_img('../../data_processing/raw/Monkey/OpenMouthThreat_2.png', target_size=(224, 224))
 
 
 # for modifier in ['guided', 'relu']:

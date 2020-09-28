@@ -22,7 +22,7 @@ def get_stats_from_csv_file(data_folder, label):
 if __name__ == '__main__':
 
     path = '../../../../Downloads/AffectNet/'  # computer a
-    # path = '../../../../media/data/AffectNet/'  # computer b
+    # path = '../../../../media/data_processing/AffectNet/'  # computer b
     # path = '../../../AffectNet/'  # computer m
 
     data_folder = 'training_small.csv'

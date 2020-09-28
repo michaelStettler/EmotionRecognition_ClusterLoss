@@ -9,7 +9,7 @@ from tqdm import tqdm
 
 train = True
 # path = '../../../../Downloads/AffectNet/'
-path = '../../../../media/data/AffectNet/'
+path = '../../../../media/data_processing/AffectNet/'
 
 if train:
     train_file_name = 'training.csv'

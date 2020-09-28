@@ -173,10 +173,10 @@ def load_computer_params(computer, model):
         print("Careful the batch size is changed to %.0f!!!!!!!!!!!!!!" % model['batch_size'])
     # blue computer (2x1080 ti)
     elif computer == 'b':
-        computer_dict['data_path'] = '../../../../media/data/'
+        computer_dict['data_path'] = '../../../../media/data_processing/'
     # cluster
     elif computer == 'c':
-        computer_dict['data_path'] = '../../../../../../beegfs/work/knaxq01/michael/data/'
+        computer_dict['data_path'] = '../../../../../../beegfs/work/knaxq01/michael/data_processing/'
     # personal MacBook
     elif computer == 'm':
         # computer_dict['data_path'] = '../../../'

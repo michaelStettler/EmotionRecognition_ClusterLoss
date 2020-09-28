@@ -41,7 +41,7 @@ def SIMPLE(include_top=True,
           l2_reg=0.0001):
     """Instantiates the VGG16 architecture.
     Optionally loads weights pre-trained on ImageNet.
-    Note that the data format convention used by the model is
+    Note that the data_processing format convention used by the model is
     the one specified in your Keras config at `~/.keras/keras.json`.
     # Arguments
         include_top: whether to include the 3 fully-connected
@@ -55,8 +55,8 @@ def SIMPLE(include_top=True,
         input_shape: optional shape tuple, only to be specified
             if `include_top` is False (otherwise the input shape
             has to be `(224, 224, 3)`
-            (with `channels_last` data format)
-            or `(3, 224, 224)` (with `channels_first` data format).
+            (with `channels_last` data_processing format)
+            or `(3, 224, 224)` (with `channels_first` data_processing format).
             It should have exactly 3 input channels,
             and width and height should be no smaller than 48.
             E.g. `(200, 200, 3)` would be one valid value.

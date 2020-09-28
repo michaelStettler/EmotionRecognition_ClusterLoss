@@ -7,9 +7,9 @@ import numpy as np
 resnet50 = ResNet50(weights='imagenet')
 print(resnet50.summary())
 
-# img_path = '../../../data/processed/Monkey/MonkeyHead.jpg'
+# img_path = '../../../data_processing/processed/Monkey/MonkeyHead.jpg'
 # img_path = 'output_filter_373.png'
-img_path = '../../../data/processed/Maya/Face/face.png'
+img_path = '../../../data_processing/processed/Maya/Face/face.png'
 img = image.load_img(img_path, target_size=(224, 224))
 x = image.img_to_array(img)
 x = np.expand_dims(x, axis=0)

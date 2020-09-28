@@ -132,7 +132,7 @@ def get_args_from_weights(weights):
 
 
 if __name__ == "__main__":
-    # images = import_img_name_from_files("../../data/processed/Maya/Face/rotate_hori")
+    # images = import_img_name_from_files("../../data_processing/processed/Maya/Face/rotate_hori")
     # print(images)
     # test_dict = {'test': 3, 'dict2': {'tes2': 4, 'test8': 5}}
     # save_obj(test_dict, "YOLO")

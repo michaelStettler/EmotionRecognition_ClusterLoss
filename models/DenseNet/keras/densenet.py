@@ -114,7 +114,7 @@ def DenseNet(blocks,
     `image_data_format='channels_last'` in your Keras config
     at ~/.keras/keras.json.
     The model and the weights are compatible with
-    TensorFlow, Theano, and CNTK. The data format
+    TensorFlow, Theano, and CNTK. The data_processing format
     convention used by the model is the one
     specified in your Keras config file.
     # Arguments
@@ -128,8 +128,8 @@ def DenseNet(blocks,
             to use as image input for the model.
         input_shape: optional shape tuple, only to be specified
             if `include_top` is False (otherwise the input shape
-            has to be `(224, 224, 3)` (with `channels_last` data format)
-            or `(3, 224, 224)` (with `channels_first` data format).
+            has to be `(224, 224, 3)` (with `channels_last` data_processing format)
+            or `(3, 224, 224)` (with `channels_first` data_processing format).
             It should have exactly 3 inputs channels.
         pooling: optional pooling mode for feature extraction
             when `include_top` is `False`.
@@ -311,7 +311,7 @@ def preprocess_input(x, data_format=None):
     """Preprocesses a numpy array encoding a batch of images.
     # Arguments
         x: a 3D or 4D numpy array consists of RGB values within [0, 255].
-        data_format: data format of the image tensor.
+        data_format: data_processing format of the image tensor.
     # Returns
         Preprocessed array.
     """

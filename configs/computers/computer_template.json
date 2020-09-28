@@ -1,0 +1,4 @@
+computer_config = {
+  "data_path": "",
+  "num_gpu": "",
+}

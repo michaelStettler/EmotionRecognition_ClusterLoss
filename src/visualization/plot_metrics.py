@@ -112,7 +112,7 @@ if __name__ == '__main__':
                         help="select the kind of learning, classification or regression")
     parser.add_argument("-da", "--data_augmentation",
                         default='2',
-                        help="select which data augmentation to perform")
+                        help="select which data_processing augmentation to perform")
     parser.add_argument("-w", "--weights",
                         default=None,
                         help="name of the weights to load")
@@ -139,7 +139,7 @@ if __name__ == '__main__':
     print("model:   ", model_name, " dataset:", dataset, "  task:", task)
     print("run:", run, "version:", version, "  da:", da)
     if weights is not None:
-        print("Weights:", weights)
+        print("weights:", weights)
     print()
     print("------------------------------------------------------------")
     print()

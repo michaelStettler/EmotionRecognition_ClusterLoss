@@ -66,7 +66,7 @@ def create_data_partition(folder_path, train_ratio, val_ratio, verbose=True):
 
 
 if __name__ == '__main__':
-    # folder_path = '../../data/processed/Monkey/Monkey1/'
+    # folder_path = '../../data_processing/processed/Monkey/Monkey1/'
     # folder_path = '../../../../Downloads/Test/'
     folder_path = '../../../../Downloads/Monkey/Monkey_2/'
     # print(os.listdir(folder_path))

@@ -1,0 +1,8 @@
+model_config = {
+    "model_name": "",
+    "pre_training_weights": "",
+    "epochs": "",
+    "batch_size": "",
+    "loss": "",
+    "learning_rate": "",
+}

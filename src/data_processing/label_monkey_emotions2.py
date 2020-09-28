@@ -65,7 +65,7 @@ def label_monkey_emotions_treshold(files, img_paths, output_dir, plot=False):
     for file in files:
         loaded_data = np.load(file)
         data.append(loaded_data[:240])
-    print("data", np.shape(data))
+    print("data_processing", np.shape(data))
 
     boundaries = [.2, .3, .4, .5, .6, .7, .8, .9, 1]
 
@@ -105,7 +105,7 @@ def label_monkey_emotions_timing(files, img_paths, output_dir, plot=False):
     for file in files:
         loaded_data = np.load(file)
         data.append(loaded_data[:240])
-    print("data", np.shape(data))
+    print("data_processing", np.shape(data))
 
     maximums = np.argmax(data, axis=1)
     print("maximum", maximums)
@@ -154,7 +154,7 @@ if __name__ == '__main__':
     computer = 'm'
 
     if computer == 'a':
-        data_path = '../../data/processed/MayaAnimation/'
+        data_path = '../../data_processing/processed/MayaAnimation/'
         output_path = '../../../../Downloads/MonkeyHeadEmotion/'
         img_path = ''
     elif computer == 'm':

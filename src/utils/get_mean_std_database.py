@@ -14,7 +14,7 @@ for img_name in tqdm(list_img):
     img.load()
     data = np.asarray(img, dtype='int32')
     data = data/255.
-    # print(np.shape(data))
+    # print(np.shape(data_processing))
 
     mean_R = np.mean(data[:, :, 0])
     mean_G = np.mean(data[:, :, 1])

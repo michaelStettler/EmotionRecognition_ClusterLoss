@@ -33,14 +33,14 @@ def get_accuracy(y_true, y_predict):
 
 def _PCA(data, dims_rescaled_data=2):
     """
-    returns: data transformed in 2 dims/columns + regenerated original data
-    pass in: data as 2D NumPy array
+    returns: data_processing transformed in 2 dims/columns + regenerated original data_processing
+    pass in: data_processing as 2D NumPy array
     https://stackoverflow.com/questions/13224362/principal-component-analysis-pca-in-python
     """
     import numpy as NP
     from scipy import linalg as LA
     m, n = data.shape
-    # mean center the data
+    # mean center the data_processing
     data -= data.mean(axis=0)
     # calculate the covariance matrix
     R = NP.cov(data, rowvar=False)
@@ -54,10 +54,10 @@ def _PCA(data, dims_rescaled_data=2):
     # sort eigenvectors according to same index
     evals = evals[idx]
     # select the first n eigenvectors (n is desired dimension
-    # of rescaled data array, or dims_rescaled_data)
+    # of rescaled data_processing array, or dims_rescaled_data)
     evecs = evecs[:, :dims_rescaled_data]
-    # carry out the transformation on the data using eigenvectors
-    # and return the re-scaled data, eigenvalues, and eigenvectors
+    # carry out the transformation on the data_processing using eigenvectors
+    # and return the re-scaled data_processing, eigenvalues, and eigenvectors
     return NP.dot(evecs.T, data.T).T, evals, evecs
 
 
@@ -167,7 +167,7 @@ def run(file_path, csv, data_type, show=False):
     intermediate_layer_model = Model(inputs=model.input,
                                      outputs=model.get_layer(layer_name).output)
 
-    # load the data and put them into a numpy array
+    # load the data_processing and put them into a numpy array
     if csv:
         data = load_csv_data(file_path + '.csv')
     else:
@@ -175,7 +175,7 @@ def run(file_path, csv, data_type, show=False):
         y = label
         y_test = test_label
 
-    print("shape data")
+    print("shape data_processing")
     print(data.shape)
 
     # predict all images
@@ -213,7 +213,7 @@ def run(file_path, csv, data_type, show=False):
     # print(val_thresh)
     # print()
 
-    # standardize the data
+    # standardize the data_processing
     mean_x_red = np.mean(x_red)
     std_x_red = np.std(x_red)
     x_stand = (x_red - mean_x_red) / std_x_red
@@ -331,7 +331,7 @@ def run(file_path, csv, data_type, show=False):
 
 
 if __name__ == '__main__':
-    # get the data
+    # get the data_processing
     # path = '../../../../Downloads/AffectNet/'  # computer a
     # path = '../../../../Downloads/MonkeyHeadEmotion/'  # computer a
     path = '../../../'  # computer m

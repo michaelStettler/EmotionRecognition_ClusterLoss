@@ -150,11 +150,11 @@ def train_model(model_name='Simple',
     history = LossHistory()
     metrics = [[], [], [], []]
 
-    print("data loading")
+    print("data_processing loading")
     data_start_time = time.time()
     print("1")
     train_generator, validation_generator = get_generator(data, model_params, da, task)
-    print("done loading data (%.2fs)" % (time.time() - data_start_time))
+    print("done loading data_processing (%.2fs)" % (time.time() - data_start_time))
     print()
 
     # define names
@@ -163,14 +163,14 @@ def train_model(model_name='Simple',
             model_save_name = '%s_%s_%s_da-%s_v-%s_cw-%s_%s' % (model_name, task, dataset, da, version, class_weights, run)
         else:
             model_save_name = '%s_%s_%s_da-%s_v-%s_%s' % (model_name, task, dataset, da, version, run)
-        # checkpoint_save_name = data['weights_path'] + 'checkpoint_%s_%s_%s_da-%s_v-%s_%s_{epoch:02d}-{val_acc:.2f}.h5' % (model_name, task, dataset, da, version, run)
+        # checkpoint_save_name = data_processing['weights_path'] + 'checkpoint_%s_%s_%s_da-%s_v-%s_%s_{epoch:02d}-{val_acc:.2f}.h5' % (model_name, task, dataset, da, version, run)
         checkpoint_save_name = data['weights_path'] + 'checkpoint_%s_%s_%s_da-%s_v-%s_%s.h5' % (model_name, task, dataset, da, version, run)
     elif mode == 'tl':
         if class_weights is not None:
             model_save_name = '%s_%s_%s_tl-%s_w-%s_da-%s_v-%s_cw-%s_%s' % (model_name, task, dataset, model_params['n_fix_layers'], weights, da, version, class_weights, run)
         else:
             model_save_name = '%s_%s_%s_tl-%s_w-%s_da-%s_v-%s_%s' % (model_name, task, dataset, model_params['n_fix_layers'], weights, da, version, run)
-        # checkpoint_save_name = data['weights_path'] + 'checkpoint_%s_%s_%s_tl-%s_w-%s_da-%s_v-%s_%s_{epoch:02d}-{val_acc:.2f}' % (model_name, task, dataset, model_params['n_fix_layers'], weights, da, version, run)
+        # checkpoint_save_name = data_processing['weights_path'] + 'checkpoint_%s_%s_%s_tl-%s_w-%s_da-%s_v-%s_%s_{epoch:02d}-{val_acc:.2f}' % (model_name, task, dataset, model_params['n_fix_layers'], weights, da, version, run)
         checkpoint_save_name = data['weights_path'] + 'checkpoint_%s_%s_%s_tl-%s_w-%s_da-%s_v-%s_%s.h5' % (model_name, task, dataset, model_params['n_fix_layers'], weights, da, version, run)
     else:
         model_save_name = 'my_model'
@@ -298,7 +298,7 @@ if __name__ == '__main__':
                         help="select the kind of learning, classification or regression")
     parser.add_argument("-da", "--data_augmentation",
                         default='0',
-                        help="select which data augmentation to perform")
+                        help="select which data_processing augmentation to perform")
     parser.add_argument("-cw", "--class_weights",
                         default=None,
                         help="select which class weights to set into the weighted loss")

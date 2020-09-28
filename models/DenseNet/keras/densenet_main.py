@@ -5,7 +5,7 @@ import numpy as np
 
 model = DenseNet121(weights='imagenet')
 
-img_path = '../../../data/processed/Monkey/MonkeyHead.jpg'
+img_path = '../../../data_processing/processed/Monkey/MonkeyHead.jpg'
 img = image.load_img(img_path, target_size=(224, 224))
 x = image.img_to_array(img)
 x = np.expand_dims(x, axis=0)

@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 train = False
 # path = '../../../../Downloads/AffectNet/'  # computer a
-path = '../../../../media/data/AffectNet/'  # computer b
+path = '../../../../media/data_processing/AffectNet/'  # computer b
 # path = '../../../AffectNet/'  # computer m
 
 if train:

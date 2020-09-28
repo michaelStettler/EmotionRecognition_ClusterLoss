@@ -33,7 +33,7 @@ def max_activation_all_best(model, n_best, input_img=None):
 
 if __name__ == '__main__':
 
-    # load data
+    # load data_processing
     activation_values = np.load('../features/activation_values.npy')
     print("loaded activation_values")
     # find all best
