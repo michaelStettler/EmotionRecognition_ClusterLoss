@@ -1,0 +1,15 @@
+{
+  "model_name": "resnet50",
+  "image_width": 32,
+  "image_height": 32,
+  "weights": null,
+  "include_top": true,
+  "n_fix_layers": "",
+  "optimizer": "sgd",
+  "learning_rate": [0.01],
+  "number_epochs": [10],
+  "l2_regularization": 0.00001,
+  "batch_size": 64,
+  "loss": "categorical_crossentropy",
+  "class_weights": []
+}

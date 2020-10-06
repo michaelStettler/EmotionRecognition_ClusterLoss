@@ -1,0 +1,14 @@
+{
+  "model_name": "",
+  "image_width": "",
+  "image_height": "",
+  "weights": null,
+  "include_top": false,
+  "n_fix_layers": "",
+  "optimizer": "",
+  "learning_rate": [],
+  "number_epochs": [],
+  "l2_regularization": "",
+  "batch_size": "",
+  "loss": ""
+}

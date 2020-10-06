@@ -1,0 +1,14 @@
+{
+  "dataset_name": "cifar10",
+  "num_classes": 10,
+  "class_names": [],
+  "labels_type": "",
+  "csv_training_file": "",
+  "csv_validation_file": "",
+  "training_directory": "",
+  "validation_directory": "",
+  "mean_RGB": [],
+  "std_RGB": [],
+  "class_label": "",
+  "box_labels": ""
+}
