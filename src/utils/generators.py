@@ -83,6 +83,8 @@ def get_generator(dataset_parameters, model_parameters):
 
         training_generator = image_dataset_from_directory(
             training_directory,
+            validation_split=0.2,
+            subset="training",
             label_mode='categorical',
             class_names=dataset_parameters['class_names'],
             batch_size=model_parameters['batch_size'],
@@ -92,6 +94,8 @@ def get_generator(dataset_parameters, model_parameters):
         )
         validation_generator = image_dataset_from_directory(
             validation_directory,
+            validation_split=0.2,
+            subset="validation",
             label_mode='categorical',
             class_names=dataset_parameters['class_names'],
             image_size=(model_parameters['img_height'],

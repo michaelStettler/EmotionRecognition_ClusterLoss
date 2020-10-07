@@ -40,7 +40,8 @@ def train_model(model_configuration: str,
                 momentum=0.9,
                 nesterov=False)
     elif model_parameters['optimizer'] == 'adam':
-        optimizer = tf.keras.optimizers.Adam(lr=0.000024)
+        optimizer = tf.keras.optimizers.Adam(
+            lr=model_parameters['learning_rate'][0])
 
     # compile the model
     model.compile(loss=model_parameters['loss'],
@@ -51,41 +52,24 @@ def train_model(model_configuration: str,
     training_data, validation_data = get_generator(dataset_parameters,
                                                    model_parameters)
 
-    if not dataset_parameters['dataset_name'] == 'blob':
-        # train the model over a set of epochs
-        for i, epochs in enumerate(model_parameters['number_epochs']):
-            tf.keras.backend.set_value(model.optimizer.lr,
-                                       model_parameters['learning_rate'][i])
+    # train the model over a set of epochs
+    for i, epochs in enumerate(model_parameters['number_epochs']):
+        tf.keras.backend.set_value(model.optimizer.lr,
+                                   model_parameters['learning_rate'][i])
 
-            model.fit(training_data,
-                      epochs=epochs,
-                      validation_data=validation_data,
-                      validation_steps=128,
-                      workers=12)
+        history = model.fit(training_data,
+                            epochs=epochs,
+                            validation_data=validation_data,
+                            validation_steps=128,
+                            workers=12)
 
-        evaluation = model.evaluate(validation_data,
-                                    workers=12,
-                                    verbose=1)
-        print("evaluation", evaluation)
+        print(history.history["accuracy"])
 
-    else:
-        # train the model over a set of epochs
-        for i, epochs in enumerate(model_parameters['number_epochs']):
-            tf.keras.backend.set_value(model.optimizer.lr,
-                                       model_parameters['learning_rate'][i])
+    evaluation = model.evaluate(validation_data,
+                                workers=12,
+                                verbose=1)
 
-            model.fit(training_data[0],
-                      training_data[1],
-                      epochs=epochs,
-                      validation_data=validation_data,
-                      validation_steps=128,
-                      workers=12)
-
-        evaluation = model.evaluate(validation_data[0],
-                                    validation_data[1],
-                                    workers=12,
-                                    verbose=1)
-        print("evaluation", evaluation)
+    print("evaluation", evaluation)
 
     model.save('./{}_{}_{}.h5'.format(model_configuration,
                                       dataset_configuration,
