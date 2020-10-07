@@ -7,8 +7,9 @@
   "csv_validation_file": "",
   "training_directory": "",
   "validation_directory": "",
-  "mean_RGB": [],
-  "std_RGB": [],
+  "mean_rgb": [],
+  "std_rgb": [],
   "class_label": "",
-  "box_labels": ""
+  "box_labels": "",
+  "data_augmentation": null
 }
