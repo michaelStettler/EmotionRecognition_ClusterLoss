@@ -37,7 +37,9 @@ def load_model(model_parameters, dataset_parameters):
         model_template = tf.keras.applications.ResNet50(
             include_top=model_parameters['include_top'],
             weights=model_parameters['weights'],
-            input_shape=None,
+            input_shape=(model_parameters['image_width'],
+                         model_parameters['image_height'],
+                         3),
             classes=dataset_parameters['num_classes']
         )
 

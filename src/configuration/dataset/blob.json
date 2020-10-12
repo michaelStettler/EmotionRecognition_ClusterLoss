@@ -1,6 +1,6 @@
 {
   "dataset_name": "blob",
-  "num_classes": 10,
+  "num_classes": 5,
   "class_names": [],
   "labels_type": "",
   "csv_training_file": "",
@@ -10,5 +10,6 @@
   "mean_RGB": [],
   "std_RGB": [],
   "class_label": "",
-  "box_labels": ""
+  "box_labels": "",
+  "data_augmentation": null
 }

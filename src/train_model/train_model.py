@@ -71,9 +71,11 @@ def train_model(model_configuration: str,
 
     print("evaluation", evaluation)
 
-    model.save('./{}_{}_{}.h5'.format(model_configuration,
-                                      dataset_configuration,
-                                      computer_configuration))
+    model.save('../weights/{}/{}_{}_{}.h5'.format(
+        dataset_parameters['dataset_name'],
+        model_configuration,
+        dataset_configuration,
+        computer_configuration))
 
 
 if __name__ == '__main__':
