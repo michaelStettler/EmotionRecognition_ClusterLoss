@@ -86,9 +86,6 @@ def get_generator(dataset_parameters,
         training_data, training_labels = make_blobs(n_samples=1000,
                                                     n_features=features,
                                                     centers=num_classes)
-        test_data, test_label = make_blobs(n_samples=1000,
-                                           n_features=features,
-                                           centers=num_classes)
 
         training_data = np.reshape(training_data,
                                    (1000,
@@ -96,11 +93,8 @@ def get_generator(dataset_parameters,
                                     model_parameters['image_width'],
                                     3))
 
-        test_data = np.reshape(test_data,
-                               (1000,
-                                model_parameters['image_height'],
-                                model_parameters['image_width'],
-                                3))
+        training_data, test_data = np.split(training_data, [800])
+        training_labels, test_label = np.split(training_labels, [800])
 
         training_labels = tf.keras.utils.to_categorical(training_labels,
                                                         num_classes)

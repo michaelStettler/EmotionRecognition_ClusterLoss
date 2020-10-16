@@ -6,7 +6,7 @@ import tensorflow as tf
 import numpy as np
 
 sys.path.insert(0, '../utils')
-from model_utility import *
+from model_utility_tf2old import *
 from generators_tf2old import *
 from data_collection import *
 
@@ -32,23 +32,8 @@ def train_model(model_configuration: str,
         dataset_parameters = json.load(json_file)
 
     # model template serves to save the model even with multi GPU training
-    model, model_template = load_model(model_parameters,
-                                       dataset_parameters)
-
-    # load optimizer with custom learning rate
-    if model_parameters['optimizer'] == 'sgd':
-        optimizer = tf.keras.optimizers. \
-            SGD(lr=model_parameters['learning_rate'][0],
-                momentum=0.9,
-                nesterov=False)
-    elif model_parameters['optimizer'] == 'adam':
-        optimizer = tf.keras.optimizers.Adam(
-            lr=model_parameters['learning_rate'][0])
-
-    # compile the model
-    model.compile(loss=model_parameters['loss'],
-                  optimizer=optimizer,
-                  metrics=['mae', 'accuracy'])
+    model = load_model(model_parameters,
+                       dataset_parameters)
 
     # create the training and validation data
     training_data, validation_data = get_generator(dataset_parameters,
