@@ -7,7 +7,7 @@ import numpy as np
 
 sys.path.insert(0, '../utils')
 from model_utility import *
-from generators import *
+from generators_tf2old import *
 from data_collection import *
 
 
