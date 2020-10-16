@@ -1,8 +1,9 @@
 import json
 import sys
-
+from sklearn.metrics import classification_report
 from argparse import ArgumentParser
 import tensorflow as tf
+import numpy as np
 
 sys.path.insert(0, '../utils')
 from model_utility import *
@@ -49,33 +50,17 @@ def train_model(model_configuration: str,
                   metrics=['mae', 'accuracy'])
 
     # create the training and validation data
-    training_data, validation_data = get_generator(dataset_parameters,
-                                                   model_parameters)
+    empty_training_data, validation_data = get_generator(dataset_parameters,
+                                                         model_parameters,
+                                                         True)
 
-    # train the model over a set of epochs
-    for i, epochs in enumerate(model_parameters['number_epochs']):
-        tf.keras.backend.set_value(model.optimizer.lr,
-                                   model_parameters['learning_rate'][i])
-
-        history = model.fit(training_data,
-                            epochs=epochs,
-                            validation_data=validation_data,
-                            validation_steps=128,
-                            workers=12)
-
-        print(history.history["accuracy"])
-
-    evaluation = model.evaluate(validation_data,
-                                workers=12,
-                                verbose=1)
-
+    # evaluate the model
+    print("evaluate model")
+    evaluation = model.evaluate_generator(validation_data,
+                                          workers=12,
+                                          verbose=1)
     print("evaluation", evaluation)
-
-    model.save('../weights/{}/{}_{}_{}.h5'.format(
-        dataset_parameters['dataset_name'],
-        model_configuration,
-        dataset_configuration,
-        computer_configuration))
+    print("evaluation", model.metrics_names)
 
 
 if __name__ == '__main__':

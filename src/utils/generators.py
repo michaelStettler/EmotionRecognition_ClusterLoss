@@ -12,7 +12,10 @@ sys.path.insert(0, './')
 from data_augmentation import *
 
 
-def get_generator(dataset_parameters, model_parameters):
+def get_generator(dataset_parameters,
+                  model_parameters,
+                  only_validation: bool = False):
+
     num_classes = dataset_parameters['num_classes']
     training_data_generator = get_data_generator(dataset_parameters)
     validation_data_generator = get_data_generator(dataset_parameters, False)
@@ -44,23 +47,25 @@ def get_generator(dataset_parameters, model_parameters):
         )
 
     elif 'csv' in dataset_parameters['labels_type']:
-        training_dataframe = pd.read_csv(
-            model_parameters['csv_training_file'])
+        if not only_validation:
+            training_dataframe = pd.read_csv(
+                model_parameters['csv_training_file'])
+
+            training_generator = training_data_generator.flow_from_dataframe(
+                dataframe=training_dataframe,
+                directory=dataset_parameters['training_directory'],
+                x_col='subDirectory_filePath',
+                y_col=dataset_parameters['class_label'],
+                has_ext=True,
+                class_mode='categorical',
+                target_size=(model_parameters['image_height'],
+                             model_parameters['image_width']),
+                batch_size=model_parameters['batch_size'],
+                shuffle=True
+            )
+
         validation_dataframe = pd.read_csv(
             model_parameters['csv_validation_file'])
-
-        training_generator = training_data_generator.flow_from_dataframe(
-            dataframe=training_dataframe,
-            directory=dataset_parameters['training_directory'],
-            x_col='subDirectory_filePath',
-            y_col=dataset_parameters['class_label'],
-            has_ext=True,
-            class_mode='categorical',
-            target_size=(model_parameters['image_height'],
-                         model_parameters['image_width']),
-            batch_size=model_parameters['batch_size'],
-            shuffle=True
-        )
 
         validation_generator = validation_data_generator.flow_from_dataframe(
             dataframe=validation_dataframe,
@@ -108,7 +113,7 @@ def get_generator(dataset_parameters, model_parameters):
             shuffle=True,
         )
 
-    # not working? blob are can only be created as shape (samples, features)
+    # creates a simple blob dataset, which is fast to train
     elif dataset_parameters['dataset_name'] == 'blob':
         features = model_parameters['image_height'] \
                    * model_parameters['image_width'] * 3
