@@ -3,12 +3,14 @@ This script removes a picture that has zero bytes and where causing issues while
 running the initial affectnet database
 It also remove the path folder as the flow_from_dataframe cannot handle it
 """
+import os
+from argparse import ArgumentParser
 
 import pandas as pd
 import shutil
 
 
-def process_affectnet(path, train: bool):
+def process_affectnet(path: str, train: bool):
     if train:
         file_name = 'training.csv'
     else:
@@ -20,6 +22,7 @@ def process_affectnet(path, train: bool):
     idx = None
     for index, image_path in enumerate(dataframe.loc[:,
                                        'subDirectory_filePath']):
+        print(image_path)
         directory, image = image_path.split('/')
         dataframe.loc[index, 'subDirectory_filePath'] = image
 
@@ -27,20 +30,38 @@ def process_affectnet(path, train: bool):
                 in image:
             idx = index
 
-    # remove the picture from the dataframe
-    if idx is not None:
-        df = dataframe.drop([idx])
+        # remove the picture from the dataframe
+        if idx is not None:
+            dataframe = dataframe.drop([idx])
 
-    # remove the sub-folder
-    if train:
-        shutil.copy(path + 'Manually_Annotated_Images/' + image_path,
-                    path + 'training/')
-    else:
-        shutil.copy(path + 'Manually_Annotated_Images/' + image_path,
-                    path + 'validation/')
+        # remove the sub-folder
+        if train:
+            new_training_path = path + 'training'
+            if not os.path.exists(new_training_path):
+                os.mkdir(new_training_path)
+            shutil.copy(path + 'Manually_Annotated_Images/' + image_path,
+                        new_training_path + '/')
+        else:
+            new_validation_path = path + 'validation'
+            if not os.path.exists(new_validation_path):
+                os.mkdir(new_validation_path)
+            shutil.copy(path + 'Manually_Annotated_Images/' + image_path,
+                        new_validation_path + '/')
 
     # save the new csv file with no sub folders and this weird pictures
     if train:
-        df.to_csv("training_modified.csv", index=False)
+        dataframe.to_csv("training_modified.csv", index=False)
     else:
-        df.to_csv("validation_modified.csv", index=False)
+        dataframe.to_csv(path + "validation_modified.csv", index=False)
+
+
+if __name__ == '__main__':
+    parser = ArgumentParser()
+    parser.add_argument("-p", "--path",
+                        help="path to the affectnet directory")
+
+    args = parser.parse_args()
+    affectnet_path = args.path
+
+    # process_affectnet(affectnet_path, True)
+    process_affectnet(affectnet_path, False)

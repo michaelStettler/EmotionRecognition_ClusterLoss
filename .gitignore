@@ -138,4 +138,10 @@ dmypy.json
 cython_debug/
 
 # Project related
-src/weights/
+src/weights/blob
+src/weights/AffectNet
+src/weights/cifar10
+src/metrics/blob
+src/metrics/AffectNet
+src/metrics/cifar10
+src/test
