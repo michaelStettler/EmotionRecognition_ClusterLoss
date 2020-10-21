@@ -5,12 +5,16 @@ It also remove the path folder as the flow_from_dataframe cannot handle it
 """
 import os
 from argparse import ArgumentParser
-
+from datetime import datetime
 import pandas as pd
 import shutil
 
 
 def process_affectnet(path: str, train: bool):
+
+    print('Processing started at {}'.format(
+        datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    ))
 
     if train:
         file_name = 'Manually_Annotated_file_lists/training.csv'
@@ -23,7 +27,7 @@ def process_affectnet(path: str, train: bool):
     idx = None
     for index, image_path in enumerate(dataframe.loc[:,
                                        'subDirectory_filePath']):
-        print(image_path)
+
         directory, image = image_path.split('/')
         dataframe.loc[index, 'subDirectory_filePath'] = image
 
@@ -54,6 +58,10 @@ def process_affectnet(path: str, train: bool):
         dataframe.to_csv("training_modified.csv", index=False)
     else:
         dataframe.to_csv(path + "validation_modified.csv", index=False)
+
+    print('Processing finished at {}'.format(
+        datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    ))
 
 
 if __name__ == '__main__':
