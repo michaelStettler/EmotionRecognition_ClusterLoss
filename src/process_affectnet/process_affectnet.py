@@ -13,9 +13,9 @@ import shutil
 def process_affectnet(path: str, train: bool):
 
     if train:
-        file_name = 'training.csv'
+        file_name = 'Manually_Annotated_file_lists/training.csv'
     else:
-        file_name = 'validation.csv'
+        file_name = 'Manually_Annotated_file_lists/validation.csv'
 
     dataframe = pd.read_csv(path + file_name)
 
