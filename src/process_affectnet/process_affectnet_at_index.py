@@ -86,9 +86,12 @@ if __name__ == '__main__':
                         help="path to the affectnet directory")
     parser.add_argument("-t", "--train", type=bool,
                         help="use to create training dir, else not")
+    parser.add_argument("-n", "--number", type=int,
+                        help="starting number")
 
     args = parser.parse_args()
     affectnet_path = args.path
     training_bool = args.train
+    starting_number = args.number
 
-    process_affectnet(affectnet_path, training_bool)
+    process_affectnet(affectnet_path, starting_number, training_bool)
