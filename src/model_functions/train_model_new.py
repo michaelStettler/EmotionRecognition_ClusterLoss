@@ -6,8 +6,8 @@ import tensorflow as tf
 import numpy as np
 
 sys.path.insert(0, '../utils')
-from model_utility_tf2old import *
-from generators_tf2old import *
+from model_utility_multi import *
+from generators import *
 from data_collection import *
 
 

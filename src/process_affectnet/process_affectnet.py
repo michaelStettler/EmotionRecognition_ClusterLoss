@@ -25,6 +25,9 @@ def process_affectnet(path: str, train: bool):
 
     # locate the picture that causes problems
     idx = None
+
+    processed_images = 0
+
     for index, image_path in enumerate(dataframe.loc[:,
                                        'subDirectory_filePath']):
 
@@ -37,21 +40,33 @@ def process_affectnet(path: str, train: bool):
 
         # remove the picture from the dataframe
         if idx is not None:
-            dataframe = dataframe.drop([idx])
+            try:
+                print('deleting row number: {}'.format(idx))
+                dataframe = dataframe.drop([idx])
+            except KeyError:
+                print('Could not delete row {}'.format(idx))
 
         # remove the sub-folder
         if train:
             new_training_path = path + 'training'
             if not os.path.exists(new_training_path):
                 os.mkdir(new_training_path)
-            shutil.copy(path + 'Manually_Annotated_Images/' + image_path,
-                        new_training_path + '/')
+            if not os.path.exists(new_training_path + '/' + image_path):
+                shutil.copy(path + 'Manually_Annotated_Images/' + image_path,
+                            new_training_path + '/')
         else:
             new_validation_path = path + 'validation'
             if not os.path.exists(new_validation_path):
                 os.mkdir(new_validation_path)
-            shutil.copy(path + 'Manually_Annotated_Images/' + image_path,
-                        new_validation_path + '/')
+            if not os.path.exists(new_validation_path + '/' + image_path):
+                shutil.copy(path + 'Manually_Annotated_Images/' + image_path,
+                            new_validation_path + '/')
+
+        processed_images = processed_images + 1
+
+        if processed_images % 1000 == 0:
+            print('processed images: {}'.format(processed_images))
+
 
     # save the new csv file with no sub folders and this weird pictures
     if train:

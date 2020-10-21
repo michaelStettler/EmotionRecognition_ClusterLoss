@@ -1,12 +1,13 @@
 import os
 import shutil
+from argparse import ArgumentParser
+
 import pandas as pd
 
 
 def create_small_affectnet(path: str,
-                           train: bool,
-                           name: str,
-                           number_of_rows: int):
+                           number_of_rows: int,
+                           train: bool):
 
     if train:
         file_name = 'training_modified.csv'
@@ -20,7 +21,7 @@ def create_small_affectnet(path: str,
     small_dataframe = pd.DataFrame(dataframe)
 
     # create new directory for the small affectnet
-    directory_small = path + dir + '_' + name
+    directory_small = path + directory + '_small' + number_of_rows
     if not os.path.exists(directory_small):
         os.mkdir(directory_small)
 
@@ -32,6 +33,25 @@ def create_small_affectnet(path: str,
 
     # create a new csv file for the limited amount of images
     if train:
-        dataframe.to_csv(path + "training_" + name + ".csv", index=False)
+        dataframe.to_csv(path + "training_small" + number_of_rows +
+                         ".csv", index=False)
     else:
-        dataframe.to_csv(path + "validation_" + name + ".csv", index=False)
+        dataframe.to_csv(path + "validation_small" + number_of_rows +
+                         ".csv", index=False)
+
+
+if __name__ == '__main__':
+    parser = ArgumentParser()
+    parser.add_argument("-p", "--path",
+                        help="path to the affectnet directory")
+    parser.add_argument("-n", "--number",
+                        help="number of images")
+    parser.add_argument("-t", "--train", type=bool,
+                        help="use to create training dir, else not")
+
+    args = parser.parse_args()
+    affectnet_path = args.path
+    subset_size = args.number
+    training_bool = args.train
+
+    create_small_affectnet(affectnet_path, subset_size, training_bool)
