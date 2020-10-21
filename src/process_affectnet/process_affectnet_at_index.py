@@ -31,7 +31,7 @@ def process_affectnet(path: str, start:int, train: bool):
     for index, image_path in enumerate(dataframe.loc[start:,
                                        'subDirectory_filePath']):
         idx = None
-
+        index = start + index
         directory, image = image_path.split('/')
         dataframe.loc[index, 'subDirectory_filePath'] = image
 
