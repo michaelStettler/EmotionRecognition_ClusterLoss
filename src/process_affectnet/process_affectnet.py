@@ -11,6 +11,7 @@ import shutil
 
 
 def process_affectnet(path: str, train: bool):
+
     if train:
         file_name = 'training.csv'
     else:
@@ -59,9 +60,11 @@ if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument("-p", "--path",
                         help="path to the affectnet directory")
+    parser.add_argument("-t", "--train", type=bool,
+                        help="use to create training dir, else not")
 
     args = parser.parse_args()
     affectnet_path = args.path
+    training_bool = args.train
 
-    # process_affectnet(affectnet_path, True)
-    process_affectnet(affectnet_path, False)
+    process_affectnet(affectnet_path, training_bool)
