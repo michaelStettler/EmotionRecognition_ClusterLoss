@@ -1,4 +1,5 @@
 import json
+import os
 import sys
 
 from argparse import ArgumentParser
@@ -64,14 +65,19 @@ def train_model(model_configuration: str,
 
     print("evaluation", evaluation)
 
-    model.save('../weights/{}/{}_{}_{}.h5'.format(
-        dataset_parameters['dataset_name'],
+    weight_path = '../weights/{}'.format(dataset_parameters['dataset_name'])
+    if not os.path.exists(weight_path):
+        os.mkdir(weight_path)
+    metric_path = '../metrics/{}'.format(dataset_parameters['dataset_name'])
+    if not os.path.exists(metric_path):
+        os.mkdir(metric_path)
+
+    model.save(weight_path + '/{}_{}_{}.h5'.format(
         model_configuration,
         dataset_configuration,
         computer_configuration))
 
-    np.save('../metrics/{}/{}_{}_{}'.format(
-        dataset_parameters['dataset_name'],
+    np.save(metric_path + '../metrics/{}/{}_{}_{}'.format(
         model_configuration,
         dataset_configuration,
         computer_configuration), metrics)
