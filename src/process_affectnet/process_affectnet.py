@@ -70,7 +70,7 @@ def process_affectnet(path: str, train: bool):
 
     # save the new csv file with no sub folders and this weird pictures
     if train:
-        dataframe.to_csv("training_modified.csv", index=False)
+        dataframe.to_csv(path + "training_modified.csv", index=False)
     else:
         dataframe.to_csv(path + "validation_modified.csv", index=False)
 
