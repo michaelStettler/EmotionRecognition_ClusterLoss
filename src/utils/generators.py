@@ -53,7 +53,7 @@ def get_generator(dataset_parameters,
             training_directory = computer_parameters['dataset_path'] + \
                                  dataset_parameters['training_directory']
 
-            training_dataframe = pd.read_csv(training_csv_file)
+            training_dataframe = pd.read_csv(training_csv_file, dtype=str)
 
             training_generator = training_data_generator.flow_from_dataframe(
                 dataframe=training_dataframe,
@@ -61,7 +61,7 @@ def get_generator(dataset_parameters,
                 x_col='subDirectory_filePath',
                 y_col=dataset_parameters['class_label'],
                 has_ext=True,
-                class_mode='sparse',
+                class_mode='categorical',
                 target_size=(model_parameters['image_height'],
                              model_parameters['image_width']),
                 batch_size=model_parameters['batch_size'],
@@ -73,7 +73,7 @@ def get_generator(dataset_parameters,
         validation_directory = computer_parameters['dataset_path'] + \
                                dataset_parameters['validation_directory']
 
-        validation_dataframe = pd.read_csv(validation_csv_file)
+        validation_dataframe = pd.read_csv(validation_csv_file, dtype=str)
 
         validation_generator = validation_data_generator.flow_from_dataframe(
             dataframe=validation_dataframe,
@@ -81,7 +81,7 @@ def get_generator(dataset_parameters,
             x_col='subDirectory_filePath',
             y_col=dataset_parameters['class_label'],
             has_ext=True,
-            class_mode='sparse',
+            class_mode='categorical',
             target_size=(model_parameters['image_height'],
                          model_parameters['image_width']),
             batch_size=model_parameters['batch_size'],
