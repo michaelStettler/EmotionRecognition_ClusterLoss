@@ -17,7 +17,7 @@ def create_small_affectnet(path: str,
         directory = 'validation'
 
     # read the csv and create a new dataframe with a limited number of rows
-    dataframe = pd.read_csv(path+file_name, nrows=number_of_rows)
+    dataframe = pd.read_csv(path+file_name, nrows=int(number_of_rows))
     small_dataframe = pd.DataFrame(dataframe)
 
     # create new directory for the small affectnet
@@ -47,7 +47,7 @@ if __name__ == '__main__':
     parser.add_argument("-n", "--number",
                         help="number of images")
     parser.add_argument("-t", "--train", type=bool,
-                        help="use to create training dir, else not")
+                        help="include when creating a training directory")
 
     args = parser.parse_args()
     affectnet_path = args.path
