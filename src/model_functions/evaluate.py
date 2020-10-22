@@ -52,6 +52,7 @@ def train_model(model_configuration: str,
     # create the training and validation data
     empty_training_data, validation_data = get_generator(dataset_parameters,
                                                          model_parameters,
+                                                         computer_parameters,
                                                          True)
 
     # evaluate the model

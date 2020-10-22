@@ -14,8 +14,8 @@ from data_augmentation import *
 
 def get_generator(dataset_parameters,
                   model_parameters,
+                  computer_parameters,
                   only_validation: bool = False):
-
     num_classes = dataset_parameters['num_classes']
     training_data_generator = get_data_generator(dataset_parameters)
     validation_data_generator = get_data_generator(dataset_parameters, False)
@@ -48,12 +48,16 @@ def get_generator(dataset_parameters,
 
     elif 'csv' in dataset_parameters['labels_type']:
         if not only_validation:
-            training_dataframe = pd.read_csv(
-                model_parameters['csv_training_file'])
+            training_csv_file = computer_parameters['dataset_path'] + \
+                                model_parameters['csv_training_file']
+            training_directory = computer_parameters['dataset_path'] + \
+                                 dataset_parameters['training_directory']
+
+            training_dataframe = pd.read_csv(training_csv_file)
 
             training_generator = training_data_generator.flow_from_dataframe(
                 dataframe=training_dataframe,
-                directory=dataset_parameters['training_directory'],
+                directory=training_directory,
                 x_col='subDirectory_filePath',
                 y_col=dataset_parameters['class_label'],
                 has_ext=True,
@@ -64,12 +68,16 @@ def get_generator(dataset_parameters,
                 shuffle=True
             )
 
-        validation_dataframe = pd.read_csv(
-            model_parameters['csv_validation_file'])
+        validation_csv_file = computer_parameters['dataset_path'] + \
+                              model_parameters['csv_validation_file']
+        validation_directory = computer_parameters['dataset_path'] + \
+                               dataset_parameters['validation_directory']
+
+        validation_dataframe = pd.read_csv(validation_csv_file)
 
         validation_generator = validation_data_generator.flow_from_dataframe(
             dataframe=validation_dataframe,
-            directory=dataset_parameters['validation_directory'],
+            directory=validation_directory,
             x_col='subDirectory_filePath',
             y_col=dataset_parameters['class_label'],
             has_ext=True,
@@ -153,4 +161,3 @@ def get_generator(dataset_parameters,
         )
 
     return training_generator, validation_generator
-

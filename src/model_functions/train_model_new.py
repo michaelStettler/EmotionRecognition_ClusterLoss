@@ -37,7 +37,8 @@ def train_model(model_configuration: str,
 
     # create the training and validation data
     training_data, validation_data = get_generator(dataset_parameters,
-                                                   model_parameters)
+                                                   model_parameters,
+                                                   computer_parameters)
 
     history = LossHistory()
     metrics = [[], [], [], []]
