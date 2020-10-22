@@ -49,7 +49,7 @@ def get_generator(dataset_parameters,
     elif 'csv' in dataset_parameters['labels_type']:
         if not only_validation:
             training_csv_file = computer_parameters['dataset_path'] + \
-                                model_parameters['csv_training_file']
+                                dataset_parameters['csv_training_file']
             training_directory = computer_parameters['dataset_path'] + \
                                  dataset_parameters['training_directory']
 
@@ -69,7 +69,7 @@ def get_generator(dataset_parameters,
             )
 
         validation_csv_file = computer_parameters['dataset_path'] + \
-                              model_parameters['csv_validation_file']
+                              dataset_parameters['csv_validation_file']
         validation_directory = computer_parameters['dataset_path'] + \
                                dataset_parameters['validation_directory']
 

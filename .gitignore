@@ -145,3 +145,6 @@ src/metrics/blob
 src/metrics/AffectNet
 src/metrics/cifar10
 src/test
+src/configuration/computer
+src/configuration/model
+src/configuration/dataset
