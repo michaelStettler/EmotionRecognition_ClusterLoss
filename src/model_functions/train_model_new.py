@@ -3,6 +3,7 @@ import os
 import sys
 
 from argparse import ArgumentParser
+from datetime import datetime
 import tensorflow as tf
 import numpy as np
 
@@ -72,15 +73,17 @@ def train_model(model_configuration: str,
     if not os.path.exists(metric_path):
         os.mkdir(metric_path)
 
-    model.save(weight_path + '/{}_{}_{}.h5'.format(
+    model.save(weight_path + '/{}_{}_{}_{}.h5'.format(
         model_configuration,
         dataset_configuration,
-        computer_configuration))
+        computer_configuration,
+        datetime.now().strftime("%Y-%m-%d_%H-%M")))
 
-    np.save(metric_path + '../metrics/{}/{}_{}_{}'.format(
+    np.save(metric_path + '/{}_{}_{}_{}'.format(
         model_configuration,
         dataset_configuration,
-        computer_configuration), metrics)
+        computer_configuration,
+        datetime.now().strftime("%Y-%m-%d_%H-%M")), metrics)
 
 
 if __name__ == '__main__':
