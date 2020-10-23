@@ -11,6 +11,8 @@ sys.path.insert(0, '../utils')
 from model_utility_multi import *
 from generators import *
 from data_collection import *
+sys.path.insert(0, '../utils/callbacks')
+from lr_callback import *
 
 
 def train_model(model_configuration: str,
@@ -42,9 +44,17 @@ def train_model(model_configuration: str,
                                                    model_parameters,
                                                    computer_parameters)
 
+    callbacks_list = []
     history = LossHistory()
     metrics = [[], [], [], []]
-    callbacks_list = [history]
+
+    if model_parameters['lr_scheduler']:
+        lr_scheduler = CustomLearningRateScheduler(
+            lr_schedule,
+            model_parameters['lr_scheduler'])
+        callbacks_list.append(lr_scheduler)
+
+    callbacks_list.append(history)
 
     # train the model over a set of epochs
     for i, epochs in enumerate(model_parameters['number_epochs']):

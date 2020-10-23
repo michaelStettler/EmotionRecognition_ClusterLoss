@@ -145,6 +145,9 @@ src/metrics/blob
 src/metrics/AffectNet
 src/metrics/cifar10
 src/test
+!*/computer_template.json
+!*/model_template.json
+!*/dataset_template.json
 src/configuration/computer
 src/configuration/model
 src/configuration/dataset

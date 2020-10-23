@@ -10,5 +10,7 @@
   "number_epochs": [],
   "l2_regularization": "",
   "batch_size": "",
-  "loss": ""
+  "loss": "",
+  "class_weights": [],
+  "lr_scheduler": [[]]
 }
