@@ -2,19 +2,27 @@ import tensorflow as tf
 
 
 class LossHistory(tf.keras.callbacks.Callback):
-    def on_train_begin(self, logs={}):
+
+    def __init__(self):
+        super(LossHistory, self).__init__()
         self.losses = []
         self.accuracies = []
         self.val_losses = []
         self.val_accuracies = []
 
-    def on_batch_end(self, batch, logs={}):
-        self.losses.append(logs.get('loss'))
-        self.accuracies.append(logs.get('acc'))
+    def on_train_begin(self, logs=None):
+        self.losses = []
+        self.accuracies = []
+        self.val_losses = []
+        self.val_accuracies = []
 
-    def on_epoch_end(self, epoch, logs={}):
+    def on_train_batch_end(self, batch, logs=None):
+        self.losses.append(logs.get('loss'))
+        self.accuracies.append(logs.get('accuracy'))
+
+    def on_epoch_end(self, epoch, logs=None):
         self.val_losses.append(logs.get('val_loss'))
-        self.val_accuracies.append(logs.get('val_acc'))
+        self.val_accuracies.append(logs.get('val_accuracy'))
 
 
 def save_metrics(history, metrics):
