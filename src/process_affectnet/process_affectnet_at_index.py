@@ -24,8 +24,6 @@ def process_affectnet(path: str, start:int, train: bool):
 
     dataframe = pd.read_csv(path + file_name)
 
-    # locate the picture that causes problems
-
     processed_images = 0
 
     for index, image_path in enumerate(dataframe.loc[start:,

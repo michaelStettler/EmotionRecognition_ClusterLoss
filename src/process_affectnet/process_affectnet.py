@@ -23,14 +23,13 @@ def process_affectnet(path: str, train: bool):
 
     dataframe = pd.read_csv(path + file_name)
 
-    # locate the picture that causes problems
-    idx = None
-
     processed_images = 0
 
     for index, image_path in enumerate(dataframe.loc[:,
                                        'subDirectory_filePath']):
 
+        # locate the picture that causes problems
+        idx = None
         directory, image = image_path.split('/')
         dataframe.loc[index, 'subDirectory_filePath'] = image
 

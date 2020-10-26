@@ -19,7 +19,6 @@ def train_model(model_configuration: str,
                 dataset_configuration: str,
                 computer_configuration: str):
     # loads name, image width/ height and l2_reg data
-    # model_parameters = load_model_parameters(model)
     with open('../configuration/model/{}.json'
                       .format(model_configuration)) as json_file:
         model_parameters = json.load(json_file)
@@ -30,7 +29,6 @@ def train_model(model_configuration: str,
         computer_parameters = json.load(json_file)
 
     # loads n_classes, labels, class names, etc.
-    # dataset_parameters = load_dataset_parameters(dataset_name, path)
     with open('../configuration/dataset/{}.json'
                       .format(dataset_configuration)) as json_file:
         dataset_parameters = json.load(json_file)

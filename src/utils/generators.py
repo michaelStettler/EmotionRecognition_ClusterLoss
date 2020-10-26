@@ -73,7 +73,7 @@ def get_generator(dataset_parameters,
         validation_directory = computer_parameters['dataset_path'] + \
                                dataset_parameters['validation_directory']
 
-        validation_dataframe = pd.read_csv(validation_csv_file, dtype=str)
+        validation_dataframe = pd.read_csv(validation_csv_file)
 
         validation_generator = validation_data_generator.flow_from_dataframe(
             dataframe=validation_dataframe,

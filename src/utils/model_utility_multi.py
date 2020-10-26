@@ -19,7 +19,7 @@ def load_model(model_parameters, dataset_parameters):
 
     with strategy.scope():
 
-        if 'resnet50' in model_parameters['model_name']:
+        if model_parameters['model_name'] == 'resnet50':
             model_template = tf.keras.applications.ResNet50(
                 include_top=model_parameters['include_top'],
                 weights=model_parameters['weights'],
@@ -29,7 +29,7 @@ def load_model(model_parameters, dataset_parameters):
                 classes=dataset_parameters['num_classes']
             )
 
-        elif 'resnet50v2' in model_parameters['model_name']:
+        elif model_parameters['model_name'] == 'resnet50v2':
             model_template = tf.keras.applications.ResNet50V2(
                 include_top=model_parameters['include_top'],
                 weights=model_parameters['weights'],
@@ -39,7 +39,7 @@ def load_model(model_parameters, dataset_parameters):
                 classes=dataset_parameters['num_classes']
             )
 
-        elif 'resnet101' in model_parameters['model_name']:
+        elif model_parameters['model_name'] == 'resnet101':
             model_template = tf.keras.applications.ResNet101(
                 include_top=model_parameters['include_top'],
                 weights=model_parameters['weights'],
