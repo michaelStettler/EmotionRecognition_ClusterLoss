@@ -42,30 +42,20 @@ def create_equal_dataset(path: str,
 
         for x, y in image_counter.items():
             counter = counter + y
-        print('''** {} **
-               Neutral {} **
-               Happy {} **
-               Sad {} **
-               Surprise {} **
-               Fear {} **
-               Disgust {} **
-               Anger {} **
-               Contempt {} **
-               None {} **
-               Uncertain {} **
-               Non-Face {} **'''.format(counter,
-                                            image_counter["Neutral"],
-                                            image_counter["Happy"],
-                                            image_counter["Sad"],
-                                            image_counter["Surprise"],
-                                            image_counter["Fear"],
-                                            image_counter["Disgust"],
-                                            image_counter["Anger"],
-                                            image_counter["Contempt"],
-                                            image_counter["None"],
-                                            image_counter["Uncertain"],
-                                            image_counter["Non-Face"]),
-              end="\r", flush=True)
+        print(
+            '** {} ** Neutral {} ** Happy {} ** Sad {} **Surprise {} ** Fear {} ** Disgust {} ** Anger {} **Contempt {} ** None {} **Uncertain {} **Non-Face {} **'.format(
+                counter,
+                image_counter["Neutral"],
+                image_counter["Happy"],
+                image_counter["Sad"],
+                image_counter["Surprise"],
+                image_counter["Fear"],
+                image_counter["Disgust"],
+                image_counter["Anger"],
+                image_counter["Contempt"],
+                image_counter["None"],
+                image_counter["Uncertain"],
+                image_counter["Non-Face"]), end="\r", flush=True)
 
         if counter == int(number_of_images) * 11:
             print('finished')
