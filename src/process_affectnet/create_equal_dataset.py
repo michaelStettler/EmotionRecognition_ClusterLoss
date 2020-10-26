@@ -37,11 +37,12 @@ def create_equal_dataset(path: str,
             shutil.copyfile(path + directory + '/' + image_name,
                             directory_new + '/' + image_name)
             image_counter[expression] = image_counter[expression] + 1
-            new_dataframe.loc[dataframe.index[index]] = dataframe.iloc[index]
+            for x, y in image_counter.items():
+                counter = counter + y
+            print('** {} ** '.format(counter), end="\r", flush=True)
+            new_dataframe.loc[counter] = dataframe.iloc[index]
 
-        for x, y in image_counter.items():
-            counter = counter + y
-        print('** {} ** '.format(counter), end="\r", flush=True)
+
 
         if counter == int(number_of_images) * 11:
             print('finished')
