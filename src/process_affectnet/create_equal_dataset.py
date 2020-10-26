@@ -42,6 +42,28 @@ def create_equal_dataset(path: str,
         for x, y in image_counter.items():
             counter = counter + y
         print('** {} **'.format(counter), end="\r", flush=True)
+        print('** Neutral {} **'.format(image_counter["Neutral"]),
+              end="\r", flush=True)
+        print('** Happy {} **'.format(image_counter["expression"]),
+              end="\r", flush=True)
+        print('** Sad {} **'.format(image_counter["expression"]),
+              end="\r", flush=True)
+        print('** Surprise {} **'.format(image_counter["Surprise"]),
+              end="\r", flush=True)
+        print('** Fear {} **'.format(image_counter["Fear"]),
+              end="\r", flush=True)
+        print('** Disgust {} **'.format(image_counter["Disgust"]),
+              end="\r", flush=True)
+        print('** Anger {} **'.format(image_counter["Anger"]),
+              end="\r", flush=True)
+        print('** Contempt {} **'.format(image_counter["Contempt"]),
+              end="\r", flush=True)
+        print('** None {} **'.format(image_counter["None"]),
+              end="\r", flush=True)
+        print('** Uncertain {} **'.format(image_counter["Uncertain"]),
+              end="\r", flush=True)
+        print('** Face {} **'.format(image_counter["Face"]), 
+              end="\r", flush=True)
 
         if counter == int(number_of_images) * 11:
             print('finished')
@@ -51,10 +73,10 @@ def create_equal_dataset(path: str,
             print('processed rows: {}'.format(index))
 
     if train:
-        dataframe.to_csv(path + "training_equal" + number_of_images +
+        new_dataframe.to_csv(path + "training_equal" + number_of_images +
                          ".csv", index=False)
     else:
-        dataframe.to_csv(path + "validation_equal" + number_of_images +
+        new_dataframe.to_csv(path + "validation_equal" + number_of_images +
                          ".csv", index=False)
 
 if __name__ == '__main__':
