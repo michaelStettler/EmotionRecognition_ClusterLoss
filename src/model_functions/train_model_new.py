@@ -33,6 +33,14 @@ def train_model(model_configuration: str,
                       .format(dataset_configuration)) as json_file:
         dataset_parameters = json.load(json_file)
 
+    # runtime initialization will not allocate all memory on the device
+    physical_devices = tf.config.list_physical_devices('GPU')
+    try:
+        tf.config.experimental.set_memory_growth(physical_devices[0], True)
+    except:
+        # Invalid device or cannot modify virtual devices once initialized.
+        pass
+
     # model template serves to save the model even with multi GPU training
     model = load_model(model_parameters,
                        dataset_parameters)

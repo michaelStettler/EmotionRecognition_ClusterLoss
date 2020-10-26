@@ -17,7 +17,7 @@ def create_equal_dataset(path: str,
 
     # read the csv and create a new dataframe
     dataframe = pd.read_csv(path + file_name)
-    new_dataframe = pd.DataFrame(dataframe)
+    new_dataframe = pd.DataFrame()
 
     # create new directory for the equal affectnet
     directory_new = path + directory + '_equal' + number_of_images
