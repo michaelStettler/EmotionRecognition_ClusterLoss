@@ -37,7 +37,7 @@ def create_equal_dataset(path: str,
             shutil.copyfile(path + directory + '/' + image_name,
                             directory_new + '/' + image_name)
             image_counter[expression] = image_counter[expression] + 1
-            new_dataframe.append(row)
+            new_dataframe.append(dataframe.loc[index, :])
 
         for x, y in image_counter.items():
             counter = counter + y
