@@ -10,10 +10,10 @@ def create_small_affectnet(path: str,
                            train: bool):
 
     if train:
-        file_name = 'training_modified.csv'
+        file_name = 'training_modified_renamed.csv'
         directory = 'training'
     else:
-        file_name = 'validation_modified.csv'
+        file_name = 'validation_modified_renamed.csv'
         directory = 'validation'
 
     # read the csv and create a new dataframe with a limited number of rows
