@@ -1,16 +1,31 @@
 from tensorflow.keras.preprocessing.image import *
+from tensorflow.keras.applications import *
 
 
 def get_data_generator(dataset_parameters, train=True):
-
     # No Data augmentation
     if not dataset_parameters['data_augmentation']:
         data_generator = ImageDataGenerator(
             rescale=1. / 255,
             horizontal_flip=False)
 
+    elif dataset_parameters['data_augmentation'] == 'resnet':
+        data_generator = ImageDataGenerator(
+            dtype='float32',
+            preprocessing_function=resnet.preprocess_input)
+
+    elif dataset_parameters['data_augmentation'] == 'resnetv2':
+        data_generator = ImageDataGenerator(
+            dtype='float32',
+            preprocessing_function=resnet_v2.preprocess_input)
+
+    elif dataset_parameters['data_augmentation'] == 'resnet101':
+        data_generator = ImageDataGenerator(
+            dtype='float32',
+            preprocessing_function=resnet.preprocess_input)
+
     # random horizontal flips, rotation and size changes
-    elif 1 in dataset_parameters['data_augmentation']:
+    elif dataset_parameters['data_augmentation'] == 1:
         if train:
             data_generator = ImageDataGenerator(
                 rescale=1. / 255,
@@ -30,7 +45,7 @@ def get_data_generator(dataset_parameters, train=True):
                 height_shift_range=0.,
                 rotation_range=0.)
 
-    elif dataset_parameters['data_augmentation'] == '2':
+    elif dataset_parameters['data_augmentation'] == 2:
         def preprocess_fn(x):
             mean_rgb = dataset_parameters['data_augmentation']['mean_rgb']
             std_rgb = dataset_parameters['data_augmentation']['std_rgb']
@@ -75,7 +90,7 @@ def get_data_generator(dataset_parameters, train=True):
                 # randomly flip images
                 vertical_flip=False,
                 # set rescaling factor (applied before any other transformation)
-                rescale=1./255,
+                rescale=1. / 255,
                 # set function that will be applied on each input
                 preprocessing_function=preprocess_fn,
                 # fraction of images reserved for validation
@@ -116,7 +131,7 @@ def get_data_generator(dataset_parameters, train=True):
                 # randomly flip images *
                 vertical_flip=False,
                 # set rescaling factor (applied before any other transformation)
-                rescale=1./255,
+                rescale=1. / 255,
                 # set function that will be applied on each input
                 preprocessing_function=preprocess_fn,
                 # fraction of images reserved for validation

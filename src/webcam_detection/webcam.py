@@ -63,6 +63,8 @@ def webcam_detection(model_configuration: str,
         dataset_parameters = json.load(json_file)
 
     model = keras.models.load_model(model_parameters['weights'])
+    print(model.summary())
+
     # launch web cam
     video_capture = cv2.VideoCapture(0)
 
@@ -76,11 +78,11 @@ def webcam_detection(model_configuration: str,
         faces = classifier.detectMultiScale(
             frame,
             scaleFactor=1.3,
-            minNeighbors=4,
+            minNeighbors=5,
             minSize=(50, 50),
             flags=cv2.CASCADE_SCALE_IMAGE)
 
-        if faces is ():
+        if faces == ():
             pass
         else:
             for (x, y, w, h) in faces:
@@ -90,7 +92,7 @@ def webcam_detection(model_configuration: str,
                 image = Image.fromarray(face, 'RGB')
                 image_array = np.array(image)
                 image_array = np.expand_dims(image_array, axis=0)
-                prediction = model.predict(image_array)
+                prediction = model(image_array)
                 print(prediction)
             predicted_name = names[np.argmax(prediction)]
 

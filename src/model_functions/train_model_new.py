@@ -81,7 +81,7 @@ def train_model(model_configuration: str,
     if not os.path.exists(metric_path):
         os.mkdir(metric_path)
 
-    model.save(weight_path + '/{}_{}_{}_{}.h5'.format(
+    model.save(weight_path + '/{}_{}_{}_{}'.format(
         model_configuration,
         dataset_configuration,
         computer_configuration,

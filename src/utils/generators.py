@@ -60,8 +60,8 @@ def get_generator(dataset_parameters,
                 directory=training_directory,
                 x_col='subDirectory_filePath',
                 y_col=dataset_parameters['class_label'],
-                has_ext=True,
                 class_mode='categorical',
+                class_names=dataset_parameters['class_label'],
                 target_size=(model_parameters['image_height'],
                              model_parameters['image_width']),
                 batch_size=model_parameters['batch_size'],
@@ -80,8 +80,8 @@ def get_generator(dataset_parameters,
             directory=validation_directory,
             x_col='subDirectory_filePath',
             y_col=dataset_parameters['class_label'],
-            has_ext=True,
             class_mode='categorical',
+            class_names=dataset_parameters['class_label'],
             target_size=(model_parameters['image_height'],
                          model_parameters['image_width']),
             batch_size=model_parameters['batch_size'],
@@ -136,8 +136,8 @@ def get_generator(dataset_parameters,
                                     model_parameters['image_width'],
                                     3))
 
-        training_data, test_data = np.split(training_data, [800])
-        training_labels, test_label = np.split(training_labels, [800])
+        _, test_data = np.split(training_data, [800])
+        _, test_label = np.split(training_labels, [800])
 
         training_labels = tf.keras.utils.to_categorical(training_labels,
                                                         num_classes)
