@@ -14,29 +14,29 @@ def rename_csv(path: str, old_name: str, new_name: str):
         number = dataframe.loc[index, 'expression']
         if number == 0:
             dataframe.loc[index, 'expression'] = 'Neutral'
-        if number == 1:
+        elif number == 1:
             dataframe.loc[index, 'expression'] = 'Happy'
-        if number == 2:
+        elif number == 2:
             dataframe.loc[index, 'expression'] = 'Sad'
-        if number == 3:
+        elif number == 3:
             dataframe.loc[index, 'expression'] = 'Surprise'
-        if number == 4:
+        elif number == 4:
             dataframe.loc[index, 'expression'] = 'Fear'
-        if number == 5:
+        elif number == 5:
             dataframe.loc[index, 'expression'] = 'Disgust'
-        if number == 6:
+        elif number == 6:
             dataframe.loc[index, 'expression'] = 'Anger'
-        if number == 7:
+        elif number == 7:
             dataframe.loc[index, 'expression'] = 'Contempt'
-        if number == 8:
+        elif number == 8:
             dataframe.loc[index, 'expression'] = 'None'
-        if number == 9:
+        elif number == 9:
             dataframe.loc[index, 'expression'] = 'Uncertain'
-        if number == 10:
+        elif number == 10:
             dataframe.loc[index, 'expression'] = 'Non-Face'
 
-    if index % 1000 == 0:
-        print('processed rows: {}'.format(index))
+        if index % 1000 == 0:
+            print('processed rows: {}'.format(index))
 
     dataframe.to_csv(path + new_name + ".csv", index=False)
 
