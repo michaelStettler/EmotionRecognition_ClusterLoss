@@ -15,11 +15,11 @@ def create_equal_dataset(path: str,
         file_name = 'validation_modified_renamed.csv'
         directory = 'validation'
 
-    # read the csv and create a new dataframe with a limited number of rows
+    # read the csv and create a new dataframe
     dataframe = pd.read_csv(path + file_name)
-    new_dataframe = pd.DataFrame(dataframe)
+    new_dataframe = pd.DataFrame()
 
-    # create new directory for the small affectnet
+    # create new directory for the equal affectnet
     directory_new = path + directory + '_equal' + number_of_images
     if not os.path.exists(directory_new):
         os.mkdir(directory_new)
@@ -29,31 +29,34 @@ def create_equal_dataset(path: str,
                      "None": 0, "Uncertain": 0, "Non-Face": 0}
 
     # copy the limited amount of images from the old into the new directory
-    for index, row in enumerate(new_dataframe.iterrows()):
+    for index, row in enumerate(dataframe.iterrows()):
         counter = 0
-        expression = new_dataframe.loc[index, 'expression']
-        expression_directory = directory_new + '/' + expression
-
-        if not os.path.exists(expression_directory):
-            os.mkdir(expression_directory)
+        expression = dataframe.loc[index, 'expression']
 
         if image_counter[expression] <= number_of_images:
-            image_name = new_dataframe.loc[index, 'subDirectory_filePath']
+            image_name = dataframe.loc[index, 'subDirectory_filePath']
             shutil.copyfile(path + directory + '/' + image_name,
-                            expression_directory + '/' + image_name)
+                            directory_new + '/' + image_name)
             image_counter[expression] = image_counter[expression] + 1
+            new_dataframe.append(row)
 
         for x, y in image_counter.items():
             counter = counter + y
-            print('** {} **'.format(counter), end="\r", flush=True)
+        print('** {} **'.format(counter), end="\r", flush=True)
 
         if counter == number_of_images * 11:
             print('finished')
             break
 
-        if index % 1000 == 0:
+        elif index % 1000 == 0:
             print('processed rows: {}'.format(index))
 
+    if train:
+        dataframe.to_csv(path + "training_equal" + number_of_images +
+                         ".csv", index=False)
+    else:
+        dataframe.to_csv(path + "validation_equal" + number_of_images +
+                         ".csv", index=False)
 
 if __name__ == '__main__':
     parser = ArgumentParser()
