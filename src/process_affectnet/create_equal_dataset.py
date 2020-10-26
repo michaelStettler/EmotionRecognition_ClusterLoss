@@ -27,7 +27,7 @@ def create_equal_dataset(path: str,
     image_counter = {"Neutral": 0, "Happy": 0, "Sad": 0, "Surprise": 0,
                      "Fear": 0, "Disgust": 0, "Anger": 0, "Contempt": 0,
                      "None": 0, "Uncertain": 0, "Non-Face": 0}
-
+    counter = 0
     # copy the limited amount of images from the old into the new directory
     for index, row in enumerate(dataframe.iterrows()):
         counter = 0
@@ -42,28 +42,29 @@ def create_equal_dataset(path: str,
 
         for x, y in image_counter.items():
             counter = counter + y
-        print(
-            '** {} ** Neutral {} ** Happy {} ** Sad {} **Surprise {} ** Fear {} ** Disgust {} ** Anger {} **Contempt {} ** None {} **Uncertain {} **Non-Face {} **'.format(
-                counter,
-                image_counter["Neutral"],
-                image_counter["Happy"],
-                image_counter["Sad"],
-                image_counter["Surprise"],
-                image_counter["Fear"],
-                image_counter["Disgust"],
-                image_counter["Anger"],
-                image_counter["Contempt"],
-                image_counter["None"],
-                image_counter["Uncertain"],
-                image_counter["Non-Face"]), end="\r", flush=True)
+        print('** {} ** '.format(counter), end="\r", flush=True)
 
         if counter == int(number_of_images) * 11:
             print('finished')
             break
 
         elif index % 1000 == 0:
-            print('processed rows: {}'.format(index))
+            print('processed rows: {} \n'.format(index))
 
+    print(
+        '** {} ** Neutral {} ** Happy {} ** Sad {} **Surprise {} ** Fear {} ** Disgust {} ** Anger {} **Contempt {} ** None {} **Uncertain {} **Non-Face {} **'.format(
+            counter,
+            image_counter["Neutral"],
+            image_counter["Happy"],
+            image_counter["Sad"],
+            image_counter["Surprise"],
+            image_counter["Fear"],
+            image_counter["Disgust"],
+            image_counter["Anger"],
+            image_counter["Contempt"],
+            image_counter["None"],
+            image_counter["Uncertain"],
+            image_counter["Non-Face"]))
     if train:
         new_dataframe.to_csv(path + "training_equal" + number_of_images +
                              ".csv", index=False)
