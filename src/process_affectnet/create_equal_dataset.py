@@ -32,7 +32,7 @@ def create_equal_dataset(path: str,
     for index, row in enumerate(dataframe.iterrows()):
         counter = 0
         expression = dataframe.loc[index, 'expression']
-        if int(image_counter[expression]) <= number_of_images:
+        if image_counter[expression] <= int(number_of_images):
             image_name = dataframe.loc[index, 'subDirectory_filePath']
             shutil.copyfile(path + directory + '/' + image_name,
                             directory_new + '/' + image_name)
@@ -43,7 +43,7 @@ def create_equal_dataset(path: str,
             counter = counter + y
         print('** {} **'.format(counter), end="\r", flush=True)
 
-        if counter == number_of_images * 11:
+        if counter == int(number_of_images) * 11:
             print('finished')
             break
 
