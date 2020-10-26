@@ -42,18 +42,18 @@ def create_equal_dataset(path: str,
 
         for x, y in image_counter.items():
             counter = counter + y
-        print('''** {} **\n
-              ** Neutral {} **\n
-              ** Happy {} **\n
-              ** Sad {} **\n
-              ** Surprise {} **\n
-              ** Fear {} **\n
-              ** Disgust {} **\n
-              ** Anger {} **\n
-              ** Contempt {} **\n
-              ** None {} **\n
-              ** Uncertain {} **\n
-              ** Non-Face {} **\n'''.format(counter,
+        print('''** {} **
+               Neutral {} **
+               Happy {} **
+               Sad {} **
+               Surprise {} **
+               Fear {} **
+               Disgust {} **
+               Anger {} **
+               Contempt {} **
+               None {} **
+               Uncertain {} **
+               Non-Face {} **'''.format(counter,
                                             image_counter["Neutral"],
                                             image_counter["Happy"],
                                             image_counter["Sad"],
