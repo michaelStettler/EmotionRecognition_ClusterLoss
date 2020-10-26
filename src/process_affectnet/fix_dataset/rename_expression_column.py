@@ -8,7 +8,7 @@ import pandas as pd
 def rename_csv(path: str, old_name: str, new_name: str):
 
     # read the csv
-    dataframe = pd.read_csv(path)
+    dataframe = pd.read_csv(path + old_name + ".csv")
     # copy the limited amount of images from the old into the new directory
     for index, row in enumerate(dataframe.iterrows()):
         number = dataframe.loc[index, 'expression']
