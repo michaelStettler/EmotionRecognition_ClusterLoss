@@ -44,9 +44,9 @@ def create_equal_dataset(path: str,
         print('** {} **'.format(counter), end="\r", flush=True)
         print('** Neutral {} **'.format(image_counter["Neutral"]),
               end="\r", flush=True)
-        print('** Happy {} **'.format(image_counter["expression"]),
+        print('** Happy {} **'.format(image_counter["Happy"]),
               end="\r", flush=True)
-        print('** Sad {} **'.format(image_counter["expression"]),
+        print('** Sad {} **'.format(image_counter["Sad"]),
               end="\r", flush=True)
         print('** Surprise {} **'.format(image_counter["Surprise"]),
               end="\r", flush=True)
@@ -62,7 +62,7 @@ def create_equal_dataset(path: str,
               end="\r", flush=True)
         print('** Uncertain {} **'.format(image_counter["Uncertain"]),
               end="\r", flush=True)
-        print('** Face {} **'.format(image_counter["Face"]), 
+        print('** Face {} **'.format(image_counter["Face"]),
               end="\r", flush=True)
 
         if counter == int(number_of_images) * 11:
