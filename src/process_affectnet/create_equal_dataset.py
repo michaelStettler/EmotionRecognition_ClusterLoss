@@ -42,29 +42,29 @@ def create_equal_dataset(path: str,
 
         for x, y in image_counter.items():
             counter = counter + y
-        print('** {} **\n' +
-              '** Neutral {} **\n' +
-              '** Happy {} **\n' +
-              '** Sad {} **\n' +
-              '** Surprise {} **\n' +
-              '** Fear {} **\n' +
-              '** Disgust {} **\n' +
-              '** Anger {} **\n' +
-              '** Contempt {} **\n' +
-              '** None {} **\n' +
-              '** Uncertain {} **\n' +
-              '** Non-Face {} **\n'.format(counter,
-                                           image_counter["Neutral"],
-                                           image_counter["Happy"],
-                                           image_counter["Sad"],
-                                           image_counter["Surprise"],
-                                           image_counter["Fear"],
-                                           image_counter["Disgust"],
-                                           image_counter["Anger"],
-                                           image_counter["Contempt"],
-                                           image_counter["None"],
-                                           image_counter["Uncertain"],
-                                           image_counter["Non-Face"]),
+        print('''** {} **\n
+              ** Neutral {} **\n
+              ** Happy {} **\n
+              ** Sad {} **\n
+              ** Surprise {} **\n
+              ** Fear {} **\n
+              ** Disgust {} **\n
+              ** Anger {} **\n
+              ** Contempt {} **\n
+              ** None {} **\n
+              ** Uncertain {} **\n
+              ** Non-Face {} **\n'''.format(counter,
+                                            image_counter["Neutral"],
+                                            image_counter["Happy"],
+                                            image_counter["Sad"],
+                                            image_counter["Surprise"],
+                                            image_counter["Fear"],
+                                            image_counter["Disgust"],
+                                            image_counter["Anger"],
+                                            image_counter["Contempt"],
+                                            image_counter["None"],
+                                            image_counter["Uncertain"],
+                                            image_counter["Non-Face"]),
               end="\r", flush=True)
 
         if counter == int(number_of_images) * 11:
