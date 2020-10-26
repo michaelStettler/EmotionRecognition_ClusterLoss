@@ -62,7 +62,7 @@ def create_equal_dataset(path: str,
               end="\r", flush=True)
         print('** Uncertain {} **'.format(image_counter["Uncertain"]),
               end="\r", flush=True)
-        print('** Face {} **'.format(image_counter["Face"]),
+        print('** Non-Face {} **'.format(image_counter["Non-Face"]),
               end="\r", flush=True)
 
         if counter == int(number_of_images) * 11:
