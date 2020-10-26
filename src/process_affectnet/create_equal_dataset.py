@@ -37,8 +37,7 @@ def create_equal_dataset(path: str,
             shutil.copyfile(path + directory + '/' + image_name,
                             directory_new + '/' + image_name)
             image_counter[expression] = image_counter[expression] + 1
-        else:
-            new_dataframe.drop(index)
+            new_dataframe.loc[dataframe.index[index]] = dataframe.iloc[index]
 
         for x, y in image_counter.items():
             counter = counter + y
@@ -49,7 +48,7 @@ def create_equal_dataset(path: str,
             break
 
         elif index % 1000 == 0:
-            print('processed rows: {} \n'.format(index))
+            print('processed rows: {}'.format(index))
 
     print(
         '** {} ** Neutral {} ** Happy {} ** Sad {} **Surprise {} ** Fear {} ** Disgust {} ** Anger {} **Contempt {} ** None {} **Uncertain {} **Non-Face {} **'.format(
