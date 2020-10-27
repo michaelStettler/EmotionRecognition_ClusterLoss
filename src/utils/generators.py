@@ -117,8 +117,7 @@ def get_generator(dataset_parameters,
             label_mode='categorical',
             class_names=dataset_parameters['class_names'],
             image_size=(model_parameters['image_height'],
-                        model_parameters['image_width']),
-            shuffle=True,
+                        model_parameters['image_width'])
         )
 
     # creates a simple blob dataset, which is fast to train

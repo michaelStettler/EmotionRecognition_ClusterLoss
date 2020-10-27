@@ -11,10 +11,14 @@ class CustomLearningRateScheduler(tf.keras.callbacks.Callback):
           as inputs and returns a new learning rate as output (float).
     """
 
-    def __init__(self, schedule, learning_rates: [(int, float)]):
+    def __init__(self, model_parameters,
+                 schedule,
+                 learning_rates: [(int, float)]):
+
         super(CustomLearningRateScheduler, self).__init__()
         self.schedule = schedule
         self.learning_rates = learning_rates
+        self.model_parameters = model_parameters
 
     def on_epoch_begin(self, epoch, logs=None):
 
@@ -22,14 +26,19 @@ class CustomLearningRateScheduler(tf.keras.callbacks.Callback):
             raise ValueError('Optimizer must have a "lr" attribute.')
 
         # Get the current learning rate from model's optimizer.
-        lr = float(tf.keras.backend.get_value(
-            self.model.optimizer.learning_rate))
+        lr = self.model.optimizer._decayed_lr(tf.float32).numpy()
 
         # Call schedule function to get the scheduled learning rate.
         scheduled_lr = self.schedule(epoch, lr, self.learning_rates)
 
+        if self.model_parameters['lr_decay']:
+            scheduled_lr = tf.keras.optimizers.schedules.ExponentialDecay(
+                initial_learning_rate=scheduled_lr,
+                decay_steps=self.model_parameters['lr_decay_steps'],
+                decay_rate=self.model_parameters['lr_decay_rate'])
+
         # Set the value back to the optimizer before this epoch starts
-        tf.keras.backend.set_value(self.model.optimizer.lr, scheduled_lr)
+        self.model.optimizer.lr = scheduled_lr
 
 
 def lr_schedule(epoch, lr, learning_rates: [(int, float)]):

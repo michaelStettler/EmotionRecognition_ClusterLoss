@@ -2,20 +2,28 @@ import tensorflow as tf
 
 
 def load_model(model_parameters, dataset_parameters):
-
     # setup for multi gpu
     strategy = tf.distribute.MirroredStrategy()
-    print('Number of devices: {}'.format(strategy.num_replicas_in_sync))
+    print('** Number of devices: {} **'.format(strategy.num_replicas_in_sync))
+
+    if model_parameters['lr_decay']:
+        learning_rate = tf.keras.optimizers.schedules.ExponentialDecay(
+            initial_learning_rate=model_parameters['learning_rate'],
+            decay_steps=model_parameters['lr_decay_steps'],
+            decay_rate=model_parameters['lr_decay_rate'])
+    else:
+        learning_rate = model_parameters['learning_rate']
 
     # load optimizer with custom learning rate
     if model_parameters['optimizer'] == 'sgd':
-        optimizer = tf.keras.optimizers. \
-            SGD(lr=model_parameters['learning_rate'][0],
-                momentum=0.9,
-                nesterov=False)
+        optimizer = tf.keras.optimizers.SGD(
+            learning_rate=learning_rate,
+            momentum=0.9,
+            nesterov=False)
+
     elif model_parameters['optimizer'] == 'adam':
         optimizer = tf.keras.optimizers.Adam(
-            lr=model_parameters['learning_rate'][0])
+            learning_rate=learning_rate)
 
     with strategy.scope():
 
@@ -51,7 +59,8 @@ def load_model(model_parameters, dataset_parameters):
 
         # adds a l2 kernel regularization to each conv2D layer
         for layer in model_template.layers:
-            if isinstance(layer, tf.keras.layers.Conv2D):
+            if isinstance(layer, tf.keras.layers.Conv2D) or \
+                    isinstance(layer, tf.keras.layers.Dense):
                 layer.kernel_regularizer = tf.keras.regularizers. \
                     l2(model_parameters['l2_regularization'])
 
@@ -59,8 +68,6 @@ def load_model(model_parameters, dataset_parameters):
         model_template.compile(loss=model_parameters['loss'],
                                optimizer=optimizer,
                                metrics=['mae', 'accuracy'])
-
-    model_template.summary()
 
     # return the model template for saving issues with multi GPU
     return model_template

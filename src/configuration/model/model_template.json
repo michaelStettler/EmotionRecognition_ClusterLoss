@@ -1,16 +1,20 @@
 {
   "model_name": "",
-  "image_width": "",
-  "image_height": "",
+  "image_width": 0,
+  "image_height": 0,
   "weights": null,
   "include_top": false,
-  "n_fix_layers": "",
+  "n_fix_layers": 0,
   "optimizer": "",
-  "learning_rate": [],
-  "number_epochs": [],
-  "l2_regularization": "",
-  "batch_size": "",
+  "learning_rate": 0,
+  "number_epochs": 0,
+  "l2_regularization": 0,
+  "batch_size": 0,
   "loss": "",
   "class_weights": [],
-  "lr_scheduler": [[]]
+  "lr_scheduler": [[]],
+  "lr_decay": false,
+  "lr_decay_steps": 0,
+  "lr_decay_rate": 0,
+  "early_stopping": false
 }

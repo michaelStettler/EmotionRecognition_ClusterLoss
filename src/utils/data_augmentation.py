@@ -2,6 +2,50 @@ from tensorflow.keras.preprocessing.image import *
 from tensorflow.keras.applications import *
 
 
+def resnet_generator(train: bool):
+    if train:
+        data_generator = ImageDataGenerator(
+            dtype='float32',
+            preprocessing_function=resnet.preprocess_input,
+            rescale=1. / 255,
+            horizontal_flip=True,
+            fill_mode="nearest",
+            zoom_range=0.3,
+            width_shift_range=0.1,
+            height_shift_range=0.1,
+            rotation_range=30)
+    else:
+        data_generator = ImageDataGenerator(
+            dtype='float32',
+            preprocessing_function=resnet.preprocess_input,
+            rescale=1. / 255,
+            horizontal_flip=False,
+            fill_mode="nearest")
+    return data_generator
+
+
+def resnet_v2_generator(train: bool):
+    if train:
+        data_generator = ImageDataGenerator(
+            dtype='float32',
+            preprocessing_function=resnet_v2.preprocess_input,
+            rescale=1. / 255,
+            horizontal_flip=True,
+            fill_mode="nearest",
+            zoom_range=0.3,
+            width_shift_range=0.1,
+            height_shift_range=0.1,
+            rotation_range=30)
+    else:
+        data_generator = ImageDataGenerator(
+            dtype='float32',
+            preprocessing_function=resnet_v2.preprocess_input,
+            rescale=1. / 255,
+            horizontal_flip=False,
+            fill_mode="nearest")
+    return data_generator
+
+
 def get_data_generator(dataset_parameters, train=True):
     # No Data augmentation
     if not dataset_parameters['data_augmentation']:
@@ -10,19 +54,13 @@ def get_data_generator(dataset_parameters, train=True):
             horizontal_flip=False)
 
     elif dataset_parameters['data_augmentation'] == 'resnet':
-        data_generator = ImageDataGenerator(
-            dtype='float32',
-            preprocessing_function=resnet.preprocess_input)
+        data_generator = resnet_generator(train)
 
     elif dataset_parameters['data_augmentation'] == 'resnetv2':
-        data_generator = ImageDataGenerator(
-            dtype='float32',
-            preprocessing_function=resnet_v2.preprocess_input)
+        data_generator = resnet_v2_generator(train)
 
     elif dataset_parameters['data_augmentation'] == 'resnet101':
-        data_generator = ImageDataGenerator(
-            dtype='float32',
-            preprocessing_function=resnet.preprocess_input)
+        data_generator = resnet_generator(train)
 
     # random horizontal flips, rotation and size changes
     elif dataset_parameters['data_augmentation'] == 1:

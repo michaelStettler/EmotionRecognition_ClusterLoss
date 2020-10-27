@@ -11,8 +11,10 @@ sys.path.insert(0, '../utils')
 from model_utility_multi import *
 from generators import *
 from data_collection import *
+
 sys.path.insert(0, '../utils/callbacks')
 from lr_callback import *
+from print_callback import *
 
 
 def train_model(model_configuration: str,
@@ -33,14 +35,6 @@ def train_model(model_configuration: str,
                       .format(dataset_configuration)) as json_file:
         dataset_parameters = json.load(json_file)
 
-    # runtime initialization will not allocate all memory on the device
-    physical_devices = tf.config.list_physical_devices('GPU')
-    try:
-        tf.config.experimental.set_memory_growth(physical_devices[0], True)
-    except:
-        # Invalid device or cannot modify virtual devices once initialized.
-        pass
-
     # model template serves to save the model even with multi GPU training
     model = load_model(model_parameters,
                        dataset_parameters)
@@ -54,27 +48,31 @@ def train_model(model_configuration: str,
     history = LossHistory()
     metrics = [[], [], [], []]
 
-    if model_parameters['lr_scheduler']:
+    # add callbacks for training
+    if model_parameters['lr_scheduler'][0]:
         lr_scheduler = CustomLearningRateScheduler(
+            model_parameters,
             lr_schedule,
             model_parameters['lr_scheduler'])
         callbacks_list.append(lr_scheduler)
+    if model_parameters['early_stopping']:
+        early_stopping = tf.keras.callbacks.EarlyStopping(
+            monitor='val_loss',
+            patience=3,
+            restore_best_weights=True)
+        callbacks_list.append(early_stopping)
 
     callbacks_list.append(history)
+    # callbacks_list.append(CustomPrintCallback())
 
-    # train the model over a set of epochs
-    for i, epochs in enumerate(model_parameters['number_epochs']):
-        tf.keras.backend.set_value(model.optimizer.lr,
-                                   model_parameters['learning_rate'][i])
+    model.fit(training_data,
+              epochs=model_parameters['number_epochs'],
+              validation_data=validation_data,
+              validation_steps=128,
+              callbacks=callbacks_list,
+              workers=12)
 
-        model.fit(training_data,
-                  epochs=epochs,
-                  validation_data=validation_data,
-                  validation_steps=128,
-                  callbacks=callbacks_list,
-                  workers=12)
-
-        save_metrics(history, metrics)
+    save_metrics(history, metrics)
 
     evaluation = model.evaluate(validation_data,
                                 workers=12,
@@ -103,6 +101,17 @@ def train_model(model_configuration: str,
 
 
 if __name__ == '__main__':
+
+    # runtime initialization will not allocate all memory on the device
+    physical_devices = tf.config.experimental.list_physical_devices('GPU')
+    try:
+        tf.config.experimental.set_memory_growth(physical_devices[0], True)
+        print('** set memory growth **')
+    except:
+        print('Invalid device or cannot modify ' +
+              'virtual devices once initialized.')
+        pass
+
     parser = ArgumentParser()
     parser.add_argument("-m", "--model",
                         help="select your model")
