@@ -6,9 +6,10 @@
   "include_top": false,
   "n_fix_layers": 0,
   "optimizer": "",
+  "momentum": null,
   "learning_rate": 0,
   "number_epochs": 0,
-  "l2_regularization": 0,
+  "l2_regularization": null,
   "batch_size": 0,
   "loss": "",
   "class_weights": [],
@@ -16,5 +17,6 @@
   "lr_decay": false,
   "lr_decay_steps": 0,
   "lr_decay_rate": 0,
-  "early_stopping": false
+  "early_stopping": false,
+  "early_stopping_monitor": ""
 }

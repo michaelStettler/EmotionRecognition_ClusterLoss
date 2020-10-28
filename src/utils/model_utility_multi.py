@@ -18,8 +18,7 @@ def load_model(model_parameters, dataset_parameters):
     if model_parameters['optimizer'] == 'sgd':
         optimizer = tf.keras.optimizers.SGD(
             learning_rate=learning_rate,
-            momentum=0.9,
-            nesterov=False)
+            momentum=model_parameters['momentum'])
 
     elif model_parameters['optimizer'] == 'adam':
         optimizer = tf.keras.optimizers.Adam(
@@ -57,12 +56,14 @@ def load_model(model_parameters, dataset_parameters):
                 classes=dataset_parameters['num_classes']
             )
 
-        # adds a l2 kernel regularization to each conv2D layer
-        for layer in model_template.layers:
-            if isinstance(layer, tf.keras.layers.Conv2D) or \
-                    isinstance(layer, tf.keras.layers.Dense):
-                layer.kernel_regularizer = tf.keras.regularizers. \
-                    l2(model_parameters['l2_regularization'])
+        if model_parameters['l2_regularization']:
+            # adds a l2 kernel regularization to each conv2D layer
+            print('** added l2 regularization **')
+            for layer in model_template.layers:
+                if isinstance(layer, tf.keras.layers.Conv2D) or \
+                        isinstance(layer, tf.keras.layers.Dense):
+                    layer.kernel_regularizer = tf.keras.regularizers. \
+                        l2(model_parameters['l2_regularization'])
 
         # compile the model
         model_template.compile(loss=model_parameters['loss'],

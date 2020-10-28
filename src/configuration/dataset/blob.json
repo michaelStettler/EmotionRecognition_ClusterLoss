@@ -11,5 +11,5 @@
   "std_RGB": [],
   "class_label": "",
   "box_labels": "",
-  "data_augmentation": "resnet"
+  "data_augmentation": "resnet_basic"
 }

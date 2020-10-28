@@ -27,8 +27,8 @@ def plot_metrics(metrics_path):
     # plot the training + testing loss and accuracy
     plt.style.use("ggplot")
     plt.figure()
-    # plt.plot(np.arange(0, size), losses_epoch, label="train_loss")
-    # plt.plot(np.arange(0, size), val_losses, label="val_loss")
+    plt.plot(np.arange(0, size), losses_epoch, label="train_loss")
+    plt.plot(np.arange(0, size), val_losses, label="val_loss")
     plt.plot(np.arange(0, size), accuracies_epoch, label="acc")
     plt.plot(np.arange(0, size), val_accuracies, label="val_acc")
     plt.title("Training Loss and Accuracy for")

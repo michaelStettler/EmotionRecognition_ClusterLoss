@@ -1,21 +1,26 @@
 import json
+import os
 import sys
 
 from argparse import ArgumentParser
+from datetime import datetime
 import tensorflow as tf
 import numpy as np
 
 sys.path.insert(0, '../utils')
-from model_utility import *
-from generators_tf2old import *
+from model_utility_multi import *
+from generators import *
 from data_collection import *
+
+sys.path.insert(0, '../utils/callbacks')
+from lr_callback import *
+from print_callback import *
 
 
 def train_model(model_configuration: str,
                 dataset_configuration: str,
                 computer_configuration: str):
     # loads name, image width/ height and l2_reg data
-    # model_parameters = load_model_parameters(model)
     with open('../configuration/model/{}.json'
                       .format(model_configuration)) as json_file:
         model_parameters = json.load(json_file)
@@ -26,51 +31,48 @@ def train_model(model_configuration: str,
         computer_parameters = json.load(json_file)
 
     # loads n_classes, labels, class names, etc.
-    # dataset_parameters = load_dataset_parameters(dataset_name, path)
     with open('../configuration/dataset/{}.json'
                       .format(dataset_configuration)) as json_file:
         dataset_parameters = json.load(json_file)
 
     # model template serves to save the model even with multi GPU training
-    model, model_template = load_model(model_parameters,
-                                       dataset_parameters)
-
-    # load optimizer with custom learning rate
-    if model_parameters['optimizer'] == 'sgd':
-        optimizer = tf.keras.optimizers. \
-            SGD(lr=model_parameters['learning_rate'][0],
-                momentum=0.9,
-                nesterov=False)
-    elif model_parameters['optimizer'] == 'adam':
-        optimizer = tf.keras.optimizers.Adam(
-            lr=model_parameters['learning_rate'][0])
-
-    # compile the model
-    model.compile(loss=model_parameters['loss'],
-                  optimizer=optimizer,
-                  metrics=['mae', 'accuracy'])
+    model = load_model(model_parameters,
+                       dataset_parameters)
 
     # create the training and validation data
     training_data, validation_data = get_generator(dataset_parameters,
-                                                   model_parameters)
+                                                   model_parameters,
+                                                   computer_parameters)
 
+    callbacks_list = []
     history = LossHistory()
     metrics = [[], [], [], []]
-    callbacks_list = [history]
 
-    # train the model over a set of epochs
-    for i, epochs in enumerate(model_parameters['number_epochs']):
-        tf.keras.backend.set_value(model.optimizer.lr,
-                                   model_parameters['learning_rate'][i])
+    # add callbacks for training
+    if model_parameters['lr_scheduler'][0]:
+        lr_scheduler = CustomLearningRateScheduler(
+            model_parameters,
+            lr_schedule,
+            model_parameters['lr_scheduler'])
+        callbacks_list.append(lr_scheduler)
+    if model_parameters['early_stopping']:
+        early_stopping = tf.keras.callbacks.EarlyStopping(
+            monitor=model_parameters['early_stopping_monitor'],
+            patience=3,
+            restore_best_weights=True)
+        callbacks_list.append(early_stopping)
 
-        model.fit(training_data,
-                  epochs=epochs,
-                  validation_data=validation_data,
-                  validation_steps=128,
-                  callbacks=callbacks_list,
-                  workers=12)
+    callbacks_list.append(history)
+    # callbacks_list.append(CustomPrintCallback())
 
-        save_metrics(history, metrics)
+    model.fit(training_data,
+              epochs=model_parameters['number_epochs'],
+              validation_data=validation_data,
+              validation_steps=128,
+              callbacks=callbacks_list,
+              workers=12)
+
+    save_metrics(history, metrics)
 
     evaluation = model.evaluate(validation_data,
                                 workers=12,
@@ -78,20 +80,38 @@ def train_model(model_configuration: str,
 
     print("evaluation", evaluation)
 
-    model.save('../weights/{}/{}_{}_{}.h5'.format(
-        dataset_parameters['dataset_name'],
-        model_configuration,
-        dataset_configuration,
-        computer_configuration))
+    weight_path = '../weights/{}'.format(dataset_parameters['dataset_name'])
+    if not os.path.exists(weight_path):
+        os.mkdir(weight_path)
+    metric_path = '../metrics/{}'.format(dataset_parameters['dataset_name'])
+    if not os.path.exists(metric_path):
+        os.mkdir(metric_path)
 
-    np.save('../metrics/{}/{}_{}_{}'.format(
-        dataset_parameters['dataset_name'],
+    model.save(weight_path + '/{}_{}_{}_{}'.format(
         model_configuration,
         dataset_configuration,
-        computer_configuration), metrics)
+        computer_configuration,
+        datetime.now().strftime("%Y-%m-%d_%H-%M")))
+
+    np.save(metric_path + '/{}_{}_{}_{}'.format(
+        model_configuration,
+        dataset_configuration,
+        computer_configuration,
+        datetime.now().strftime("%Y-%m-%d_%H-%M")), metrics)
 
 
 if __name__ == '__main__':
+
+    # runtime initialization will not allocate all memory on the device
+    physical_devices = tf.config.experimental.list_physical_devices('GPU')
+    try:
+        tf.config.experimental.set_memory_growth(physical_devices[0], True)
+        print('** set memory growth **')
+    except:
+        print('Invalid device or cannot modify ' +
+              'virtual devices once initialized.')
+        pass
+
     parser = ArgumentParser()
     parser.add_argument("-m", "--model",
                         help="select your model")
