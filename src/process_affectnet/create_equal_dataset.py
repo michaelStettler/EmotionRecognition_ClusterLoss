@@ -17,7 +17,8 @@ def create_equal_dataset(path: str,
 
     # read the csv and create a new dataframe
     dataframe = pd.read_csv(path + file_name)
-    new_dataframe = pd.DataFrame()
+    new_dataframe = pd.DataFrame(columns=['subDirectory_filePath',
+                                          'expression'], index=None)
 
     # create new directory for the equal affectnet
     directory_new = path + directory + '_equal' + number_of_images
@@ -37,7 +38,9 @@ def create_equal_dataset(path: str,
             shutil.copyfile(path + directory + '/' + image_name,
                             directory_new + '/' + image_name)
             image_counter[expression] = image_counter[expression] + 1
-            new_dataframe.loc[dataframe.index[index]] = dataframe.iloc[index]
+            new_dataframe = new_dataframe.append(
+                {'subDirectory_filePath': image_name, 'expression': expression},
+                ignore_index=True)
             for x, y in image_counter.items():
                 counter = counter + y
 
