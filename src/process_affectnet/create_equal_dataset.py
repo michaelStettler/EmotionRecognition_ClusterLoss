@@ -43,13 +43,14 @@ def create_equal_dataset(path: str,
                 ignore_index=True)
             for x, y in image_counter.items():
                 counter = counter + y
+                if counter % 1000 == 0:
+                    print('images: {}'.format(counter))
 
         if counter == int(number_of_images) * 11:
             print('finished')
             break
 
-        elif counter % 1000 == 0:
-            print('images: {}'.format(counter))
+
 
     print(
         '** {} ** Neutral {} ** Happy {} ** Sad {} **Surprise {} ** Fear {} ** Disgust {} ** Anger {} **Contempt {} ** None {} **Uncertain {} **Non-Face {} **'.format(
