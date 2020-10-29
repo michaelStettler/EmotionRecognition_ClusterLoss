@@ -12,6 +12,7 @@
   "l2_regularization": null,
   "batch_size": 0,
   "loss": "",
+  "from_logits": false,
   "class_weights": [],
   "lr_scheduler": [[]],
   "lr_decay": false,

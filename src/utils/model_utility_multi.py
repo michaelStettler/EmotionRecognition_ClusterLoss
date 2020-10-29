@@ -68,11 +68,17 @@ def load_model(model_parameters, dataset_parameters):
                         l2(model_parameters['l2_regularization'])
 
         if model_parameters['loss'] == 'categorical_crossentropy':
-            loss = tf.keras.losses.CategoricalCrossentropy(from_logits=True)
+            loss = tf.keras.losses.CategoricalCrossentropy(
+                from_logits=model_parameters['from_logits'])
+            print('** loss is categorical_crossentropy, from logits is {}'
+                  .format(model_parameters['from_logits']))
+
         # compile the model
         model_template.compile(loss=loss,
                                optimizer=optimizer,
                                metrics=['mae', 'accuracy'])
+
+        print(model_template.get_config())
 
     # return the model template for saving issues with multi GPU
     return model_template

@@ -26,6 +26,9 @@ if __name__ == '__main__':
     parser.add_argument("-m3", "--model3",
                         help="select your model",
                         default=None)
+    parser.add_argument("-m4", "--model4",
+                        help="select your model",
+                        default=None)
     parser.add_argument("-d", "--dataset",
                         help="select your dataset")
     parser.add_argument("-c", "--computer",
@@ -35,6 +38,7 @@ if __name__ == '__main__':
     model1_configuration_name = args.model1
     model2_configuration_name = args.model2
     model3_configuration_name = args.model3
+    model4_configuration_name = args.model4
     dataset_configuration_name = args.dataset
     computer_configuration_name = args.computer
 
@@ -47,5 +51,9 @@ if __name__ == '__main__':
                     computer_configuration_name)
     if model3_configuration_name:
         train_model(model3_configuration_name,
+                    dataset_configuration_name,
+                    computer_configuration_name)
+    if model4_configuration_name:
+        train_model(model4_configuration_name,
                     dataset_configuration_name,
                     computer_configuration_name)
