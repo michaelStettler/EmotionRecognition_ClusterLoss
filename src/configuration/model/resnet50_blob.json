@@ -1,10 +1,11 @@
 {
-  "model_name": "resnet50",
+  "model_name": "resnet50v2",
   "image_width": 32,
   "image_height": 32,
   "weights": null,
   "include_top": true,
   "n_fix_layers": "",
+  "activation": "linear",
   "optimizer": "sgd",
   "momentum": 0.0,
   "learning_rate": 0.01,

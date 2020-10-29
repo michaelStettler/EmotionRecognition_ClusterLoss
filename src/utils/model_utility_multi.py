@@ -37,13 +37,15 @@ def load_model(model_parameters, dataset_parameters):
             )
 
         elif model_parameters['model_name'] == 'resnet50v2':
+            print('** loaded resnet50v2 **')
             model_template = tf.keras.applications.ResNet50V2(
                 include_top=model_parameters['include_top'],
                 weights=model_parameters['weights'],
                 input_shape=(model_parameters['image_width'],
                              model_parameters['image_height'],
                              3),
-                classes=dataset_parameters['num_classes']
+                classes=dataset_parameters['num_classes'],
+                classifier_activation=model_parameters['activation']
             )
 
         elif model_parameters['model_name'] == 'resnet101':
@@ -65,8 +67,10 @@ def load_model(model_parameters, dataset_parameters):
                     layer.kernel_regularizer = tf.keras.regularizers. \
                         l2(model_parameters['l2_regularization'])
 
+        if model_parameters['loss'] == 'categorical_crossentropy':
+            loss = tf.keras.losses.CategoricalCrossentropy(from_logits=True)
         # compile the model
-        model_template.compile(loss=model_parameters['loss'],
+        model_template.compile(loss=loss,
                                optimizer=optimizer,
                                metrics=['mae', 'accuracy'])
 

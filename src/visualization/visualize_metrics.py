@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from argparse import ArgumentParser
 
 
-def plot_metrics(metrics_path):
+def plot_metrics(metrics_path: str, plot_name: str):
 
     # load the metrics values
     metrics = np.load(metrics_path, allow_pickle=True)
@@ -15,9 +15,12 @@ def plot_metrics(metrics_path):
     num_epoch = np.shape(val_losses)[0]
     num_batch_per_epoch = np.shape(losses)[0] // num_epoch
 
+    print(num_epoch)
+    print(num_batch_per_epoch)
+
     losses_epoch = []
     accuracies_epoch = []
-    print(accuracies)
+
     for i, loss in enumerate(losses):
         if i % num_batch_per_epoch == 0:
             losses_epoch.append(loss)
@@ -31,21 +34,32 @@ def plot_metrics(metrics_path):
     plt.plot(np.arange(0, size), val_losses, label="val_loss")
     plt.plot(np.arange(0, size), accuracies_epoch, label="acc")
     plt.plot(np.arange(0, size), val_accuracies, label="val_acc")
-    plt.title("Training Loss and Accuracy for")
+    plt.title("Training Loss and Accuracy for {}".format(plot_name))
     plt.xlabel("Epoch #")
     plt.ylabel("Loss/Accuracy")
     plt.legend()
     plt.show()
 
+    plt.style.use("ggplot")
+    plt.figure()
+    plt.plot(np.arange(0, size), accuracies_epoch, label="acc")
+    plt.plot(np.arange(0, size), val_accuracies, label="val_acc")
+    plt.title("Accuracy for {}".format(plot_name))
+    plt.xlabel("Epoch #")
+    plt.ylabel("Accuracy")
+    plt.legend()
+    plt.show()
+
 
 if __name__ == '__main__':
-    weights = 'imagenet'  # needed only for transfer learning
-
     parser = ArgumentParser()
     parser.add_argument("-p", "--path",
                         help="path to metric")
+    parser.add_argument("-n", "--name",
+                        help="name for the plot")
 
     args = parser.parse_args()
     metric_path = args.path
+    name = args.name
 
-    plot_metrics(metric_path)
+    plot_metrics(metric_path, name)
