@@ -78,7 +78,5 @@ def load_model(model_parameters, dataset_parameters):
                                optimizer=optimizer,
                                metrics=['mae', 'accuracy'])
 
-        print(model_template.get_config())
-
     # return the model template for saving issues with multi GPU
     return model_template
