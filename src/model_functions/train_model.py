@@ -50,12 +50,14 @@ def train_model(model_configuration: str,
 
     # add callbacks for training
     if model_parameters['lr_scheduler'][0]:
+        print('** lr_scheduler enabled **')
         lr_scheduler = CustomLearningRateScheduler(
             model_parameters,
             lr_schedule,
             model_parameters['lr_scheduler'])
         callbacks_list.append(lr_scheduler)
     if model_parameters['early_stopping']:
+        print('** early_stopping enabled **')
         early_stopping = tf.keras.callbacks.EarlyStopping(
             monitor=model_parameters['early_stopping_monitor'],
             patience=3,

@@ -92,8 +92,8 @@ def plot_metrics(metrics_path: str, plot_name: str, path_name: str):
     # plot accuracy only
     plt.style.use("ggplot")
     plt.figure()
-    plt.plot(np.arange(0, size), losses_epoch, label="acc")
-    plt.plot(np.arange(0, size), val_losses, label="val_acc")
+    plt.plot(np.arange(0, size), losses_epoch, label="train_loss")
+    plt.plot(np.arange(0, size), val_losses, label="val_loss")
     plt.title("Loss for {}".format(plot_name))
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
