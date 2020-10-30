@@ -27,7 +27,6 @@ class CustomLearningRateScheduler(tf.keras.callbacks.Callback):
 
         # Get the current learning rate from model's optimizer.
         lr = self.model.optimizer._decayed_lr(tf.float32).numpy()
-        print(lr)
         # Call schedule function to get the scheduled learning rate.
         scheduled_lr = self.schedule(epoch, lr, self.learning_rates)
 
@@ -39,6 +38,7 @@ class CustomLearningRateScheduler(tf.keras.callbacks.Callback):
 
         # Set the value back to the optimizer before this epoch starts
         self.model.optimizer.lr = scheduled_lr
+        print(self.model.optimizer._decayed_lr(tf.float32).numpy())
 
 
 def lr_schedule(epoch, lr, learning_rates: [(int, float)]):
