@@ -34,18 +34,35 @@ def plot_metrics(metrics_path: str, plot_name: str, path_name: str):
             losses_epoch.append(loss)
             accuracies_epoch.append(accuracies[i])
 
+    np.insert(losses_epoch, 0, 0)
+    np.insert(val_losses, 0, 0)
+    np.insert(accuracies_epoch, 0, 0)
+    np.insert(val_accuracies, 0, 0)
     size = np.shape(losses_epoch)[0]
+
+    ticks = size // 5
+    labels = [1, None, None, None, 5]
+    if ticks > 1:
+        for tick_number in range(2, ticks + 1):
+            labels.append(None)
+            labels.append(None)
+            labels.append(None)
+            labels.append(None)
+            labels.append(5 * tick_number)
+    print(labels)
+    epoch_size = size + 1
     # plot the training + testing loss and accuracy
     plt.style.use("ggplot")
     plt.figure()
-    plt.plot(np.arange(0, size), losses_epoch, label="train_loss")
-    plt.plot(np.arange(0, size), val_losses, label="val_loss")
-    plt.plot(np.arange(0, size), accuracies_epoch, label="acc")
-    plt.plot(np.arange(0, size), val_accuracies, label="val_acc")
+    plt.plot(np.arange(1, epoch_size), losses_epoch, label="train_loss")
+    plt.plot(np.arange(1, epoch_size), val_losses, label="val_loss")
+    plt.plot(np.arange(1, epoch_size), accuracies_epoch, label="acc")
+    plt.plot(np.arange(1, epoch_size), val_accuracies, label="val_acc")
     plt.title("Training Loss and Accuracy for {}".format(plot_name))
     plt.xlabel("Epoch")
     plt.ylabel("Loss/Accuracy")
     plt.legend()
+    plt.xticks(np.arange(1, epoch_size), labels)
     # plt.show()
     plt.savefig(path + path_name + '/acc_loss_combined.png',
                 bbox_inches='tight')
@@ -56,17 +73,18 @@ def plot_metrics(metrics_path: str, plot_name: str, path_name: str):
     color2 = 'magenta'
     ax1.set_xlabel('Epoch')
     ax1.set_ylabel('Loss', color=color)
-    ax1.plot(np.arange(0, size), losses_epoch, label="train_loss", color=color)
-    ax1.plot(np.arange(0, size), val_losses, label="val_loss", color=color2)
+    ax1.plot(np.arange(1, epoch_size), losses_epoch, label="train_loss", color=color)
+    ax1.plot(np.arange(1, epoch_size), val_losses, label="val_loss", color=color2)
     ax1.tick_params(axis='y', labelcolor=color)
     ax1.legend(loc='upper left')
     ax1.grid()
+    plt.xticks(np.arange(1, epoch_size), labels)
     ax2 = ax1.twinx()
     color = 'darkblue'
     color2 = 'black'
     ax2.set_ylabel('Accuracy', color=color)
-    ax2.plot(np.arange(0, size), accuracies_epoch, label="acc", color=color)
-    ax2.plot(np.arange(0, size), val_accuracies, label="val_acc", color=color2)
+    ax2.plot(np.arange(1, epoch_size), accuracies_epoch, label="acc", color=color)
+    ax2.plot(np.arange(1, epoch_size), val_accuracies, label="val_acc", color=color2)
     ax2.tick_params(axis='y', labelcolor=color)
     ax2.set_ylim(0, 1)
     ax2.legend(loc='upper right')
@@ -79,12 +97,13 @@ def plot_metrics(metrics_path: str, plot_name: str, path_name: str):
     # plot accuracy only
     plt.style.use("ggplot")
     plt.figure()
-    plt.plot(np.arange(0, size), accuracies_epoch, label="acc")
-    plt.plot(np.arange(0, size), val_accuracies, label="val_acc")
+    plt.plot(np.arange(1, epoch_size), accuracies_epoch, label="acc")
+    plt.plot(np.arange(1, epoch_size), val_accuracies, label="val_acc")
     plt.title("Accuracy for {}".format(plot_name))
     plt.xlabel("Epoch")
     plt.ylabel("Accuracy")
     plt.legend()
+    plt.xticks(np.arange(1, epoch_size), labels)
     # plt.show()
     plt.savefig(path + path_name + '/acc_epoch.png',
                 bbox_inches='tight')
@@ -92,12 +111,13 @@ def plot_metrics(metrics_path: str, plot_name: str, path_name: str):
     # plot accuracy only
     plt.style.use("ggplot")
     plt.figure()
-    plt.plot(np.arange(0, size), losses_epoch, label="train_loss")
-    plt.plot(np.arange(0, size), val_losses, label="val_loss")
+    plt.plot(np.arange(1, epoch_size), losses_epoch, label="train_loss")
+    plt.plot(np.arange(1, epoch_size), val_losses, label="val_loss")
     plt.title("Loss for {}".format(plot_name))
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
     plt.legend()
+    plt.xticks(np.arange(1, epoch_size), labels)
     # plt.show()
     plt.savefig(path + path_name + '/loss_epoch.png',
                 bbox_inches='tight')
