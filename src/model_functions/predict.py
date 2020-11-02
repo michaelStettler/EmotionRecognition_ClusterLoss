@@ -39,8 +39,6 @@ def train_model(model_configuration: str,
                                                          True)
 
     predictions = model.predict(validation_data,
-                                steps=dataset_parameters['validation_images'] /
-                                      model_parameters['batch_size'],
                                 workers=12,
                                 verbose=1)
 
