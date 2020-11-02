@@ -30,28 +30,12 @@ def train_model(model_configuration: str,
                       .format(dataset_configuration)) as json_file:
         dataset_parameters = json.load(json_file)
 
-    # model template serves to save the model even with multi GPU training
-    model, model_template = load_model(model_parameters,
-                                       dataset_parameters)
-
-    # load optimizer with custom learning rate
-    if model_parameters['optimizer'] == 'sgd':
-        optimizer = tf.keras.optimizers. \
-            SGD(lr=model_parameters['learning_rate'][0],
-                momentum=0.9,
-                nesterov=False)
-    elif model_parameters['optimizer'] == 'adam':
-        optimizer = tf.keras.optimizers.Adam(
-            lr=model_parameters['learning_rate'][0])
-
-    # compile the model
-    model.compile(loss=model_parameters['loss'],
-                  optimizer=optimizer,
-                  metrics=['mae', 'accuracy'])
+    model = tf.keras.models.load_model(model_parameters['model_path'])
 
     # create the training and validation data
     empty_training_data, validation_data = get_generator(dataset_parameters,
                                                          model_parameters,
+                                                         computer_parameters,
                                                          True)
 
     predictions = model.predict(validation_data,
@@ -61,7 +45,7 @@ def train_model(model_configuration: str,
                                 verbose=1)
 
     print("shape prediction", np.shape(predictions))
-    if 'affectnet' in dataset_parameters['dataset_name']:
+    if 'AffectNet' in dataset_parameters['dataset_name']:
         print(classification_report(validation_data.classes,
                                     predictions.argmax(axis=1),
                                     target_names=dataset_parameters[
@@ -70,7 +54,7 @@ def train_model(model_configuration: str,
         print(classification_report(validation_data.classes,
                                     predictions.argmax(axis=1)))
 
-    np.save('../weights/{}/'.format(dataset_parameters['dataset_name'])
+    np.save('../metrics/{}/'.format(dataset_parameters['dataset_name'])
             + 'predictions', predictions)
 
 
