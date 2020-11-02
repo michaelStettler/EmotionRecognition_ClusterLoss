@@ -19,6 +19,7 @@ def get_generator(dataset_parameters,
     num_classes = dataset_parameters['num_classes']
     training_data_generator = get_data_generator(dataset_parameters)
     validation_data_generator = get_data_generator(dataset_parameters, False)
+    training_generator = None
 
     if dataset_parameters['dataset_name'] == 'cifar10':
         # load the images from keras
