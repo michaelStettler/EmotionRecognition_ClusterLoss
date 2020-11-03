@@ -38,8 +38,7 @@ def normalize_faces(image, faces_coord):
     return faces
 
 
-def webcam_detection(model_configuration: str,
-                     dataset_configuration: str):
+def webcam_detection(model_path: str):
     cap = cv2.VideoCapture(0)
 
     # web cam params
@@ -50,20 +49,9 @@ def webcam_detection(model_configuration: str,
     line_type = 2
 
     names = ['Neutral', 'Happiness', 'Sadness', 'Surprise', 'Fear',
-             'Disgust', 'Anger', 'Contempt', 'None', 'Uncertain', 'No-Face']
+             'Disgust', 'Anger', 'Contempt']
 
-    # loads name, image width/ height and l2_reg data
-    with open('../configuration/model/{}.json'
-                      .format(model_configuration)) as json_file:
-        model_parameters = json.load(json_file)
-
-    # loads n_classes, labels, class names, etc.
-    with open('../configuration/dataset/{}.json'
-                      .format(dataset_configuration)) as json_file:
-        dataset_parameters = json.load(json_file)
-
-    model = keras.models.load_model(model_parameters['weights'])
-    print(model.summary())
+    model = keras.models.load_model(model_path)
 
     # launch web cam
     video_capture = cv2.VideoCapture(0)
@@ -89,20 +77,24 @@ def webcam_detection(model_configuration: str,
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 255), 2)
             faces_only = normalize_faces(frame, faces)
             for face in faces_only:
-                image = Image.fromarray(face, 'RGB')
-                image_array = np.array(image)
+                # image = Image.fromarray(face, 'RGB')
+                image_array = np.array(face)
                 image_array = np.expand_dims(image_array, axis=0)
-                prediction = model(image_array)
-                print(prediction)
-            predicted_name = names[np.argmax(prediction)]
 
-            # add text on the image
-            cv2.putText(frame, predicted_name,
-                        bottom_left_corner_Of_text,
-                        font,
-                        font_scale,
-                        font_color,
-                        line_type)
+        # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        x = cv2.resize(frame, (224, 224))
+        x = np.expand_dims(x, axis=0)
+        print(x.shape)
+        prediction = model(x)
+        predicted_name = names[np.argmax(prediction)]
+
+        # add text on the image
+        cv2.putText(frame, predicted_name,
+                    bottom_left_corner_Of_text,
+                    font,
+                    font_scale,
+                    font_color,
+                    line_type)
 
         cv2.imshow('frame', frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -119,12 +111,8 @@ if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument("-m", "--model",
                         help="select your model")
-    parser.add_argument("-d", "--dataset",
-                        help="select your dataset")
 
     args = parser.parse_args()
     model_configuration_name = args.model
-    dataset_configuration_name = args.dataset
 
-    webcam_detection(model_configuration_name,
-                     dataset_configuration_name)
+    webcam_detection(model_configuration_name)

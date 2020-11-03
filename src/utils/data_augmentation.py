@@ -7,7 +7,6 @@ def resnet_generator(train: bool):
         data_generator = ImageDataGenerator(
             dtype='float32',
             preprocessing_function=resnet.preprocess_input,
-            rescale=1. / 255,
             horizontal_flip=True,
             fill_mode="nearest",
             zoom_range=0.3,
@@ -18,7 +17,6 @@ def resnet_generator(train: bool):
         data_generator = ImageDataGenerator(
             dtype='float32',
             preprocessing_function=resnet.preprocess_input,
-            rescale=1. / 255,
             horizontal_flip=False,
             fill_mode="nearest")
     return data_generator
@@ -29,7 +27,6 @@ def resnet_v2_generator(train: bool):
         data_generator = ImageDataGenerator(
             dtype='float32',
             preprocessing_function=resnet_v2.preprocess_input,
-            rescale=1. / 255,
             horizontal_flip=True,
             fill_mode="nearest",
             zoom_range=0.3,
@@ -40,7 +37,6 @@ def resnet_v2_generator(train: bool):
         data_generator = ImageDataGenerator(
             dtype='float32',
             preprocessing_function=resnet_v2.preprocess_input,
-            rescale=1. / 255,
             horizontal_flip=False,
             fill_mode="nearest")
     return data_generator
