@@ -38,10 +38,6 @@ class CustomLearningRateScheduler(tf.keras.callbacks.Callback):
 
         # Set the value back to the optimizer before this epoch starts
         self.model.optimizer.lr = scheduled_lr
-        print('lr at Epoch {}: {}'.format(
-            epoch,
-            self.model.optimizer._decayed_lr(tf.float32).numpy()
-        ))
 
 
 def lr_schedule(epoch, lr, learning_rates: [(int, float)]):

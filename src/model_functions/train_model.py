@@ -65,7 +65,7 @@ def train_model(model_configuration: str,
         callbacks_list.append(early_stopping)
 
     callbacks_list.append(history)
-    # callbacks_list.append(CustomPrintCallback())
+    callbacks_list.append(CustomPrintCallback())
 
     model.fit(training_data,
               epochs=model_parameters['number_epochs'],
