@@ -1,6 +1,6 @@
 import json
 from argparse import ArgumentParser
-from tensorflow import keras
+import tensorflow as tf
 import cv2
 import sys
 import numpy as np
@@ -39,6 +39,10 @@ def normalize_faces(image, faces_coord):
 
 
 def webcam_detection(model_path: str):
+    physical_devices = tf.config.experimental.list_physical_devices('GPU')
+    assert len(
+        physical_devices) > 0, "Not enough GPU hardware devices available"
+    config = tf.config.experimental.set_memory_growth(physical_devices[0], True)
     cap = cv2.VideoCapture(0)
 
     # web cam params
@@ -51,7 +55,7 @@ def webcam_detection(model_path: str):
     names = ['Neutral', 'Happiness', 'Sadness', 'Surprise', 'Fear',
              'Disgust', 'Anger', 'Contempt']
 
-    model = keras.models.load_model(model_path)
+    model = tf.keras.models.load_model(model_path)
 
     # launch web cam
     video_capture = cv2.VideoCapture(0)
@@ -70,6 +74,7 @@ def webcam_detection(model_path: str):
             minSize=(50, 50),
             flags=cv2.CASCADE_SCALE_IMAGE)
 
+        predicted_name = 'unknown'
         if faces == ():
             pass
         else:
@@ -77,16 +82,21 @@ def webcam_detection(model_path: str):
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 255), 2)
             faces_only = normalize_faces(frame, faces)
             for face in faces_only:
-                # image = Image.fromarray(face, 'RGB')
-                image_array = np.array(face)
+                image = Image.fromarray(face, 'RGB')
+                image_array = np.array(image, dtype=np.float32)
+                image_array /= 127.5
+                image_array -= 1.
                 image_array = np.expand_dims(image_array, axis=0)
+                prediction = model(image_array)
 
-        # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        x = cv2.resize(frame, (224, 224))
-        x = np.expand_dims(x, axis=0)
-        print(x.shape)
-        prediction = model(x)
-        predicted_name = names[np.argmax(prediction)]
+        #img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        #x = cv2.resize(img, (224, 224))
+        #x = np.array(x, dtype=np.float32)
+        #x /= 127.5
+        #x -= 1.
+        #x = np.expand_dims(x, axis=0)
+        #prediction = model(x)
+            predicted_name = names[np.argmax(prediction)]
 
         # add text on the image
         cv2.putText(frame, predicted_name,
