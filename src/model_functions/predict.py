@@ -43,6 +43,8 @@ def train_model(model_configuration: str,
                                 verbose=1)
 
     print("shape prediction", np.shape(predictions))
+    print('** classes: **', validation_data.classes)
+    print('** classes indices: **', validation_data.class_indices)
     if 'AffectNet' in dataset_parameters['dataset_name']:
         print(classification_report(validation_data.classes,
                                     predictions.argmax(axis=1),
