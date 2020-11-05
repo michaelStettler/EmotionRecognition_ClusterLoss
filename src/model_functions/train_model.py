@@ -85,7 +85,7 @@ def train_model(model_configuration: str,
               validation_data=validation_data,
               validation_steps=128,
               callbacks=callbacks_list,
-              class_weights=class_weights,
+              class_weight=class_weights,
               workers=12)
 
     save_metrics(history, metrics)
