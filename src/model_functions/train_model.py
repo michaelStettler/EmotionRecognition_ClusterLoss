@@ -67,20 +67,20 @@ def train_model(model_configuration: str,
     callbacks_list.append(history)
     callbacks_list.append(CustomPrintCallback())
 
+    print('** classes indices: **', training_data.class_indices)
     class_weights = None
     if model_parameters['class_weights']:
-        print('** loaded class weights **')
         class_weights = {
-            0: float(134414 / 74874),
-            1: float(134414 / 134414),
-            2: float(134414 / 25459),
-            3: float(134414 / 14090),
-            4: float(134414 / 6378),
-            5: float(134414 / 3803),
-            6: float(134414 / 24882),
-            7: float(134414 / 3750),
+            0: float(134414 / 24882),
+            1: float(134414 / 3750),
+            2: float(134414 / 3803),
+            3: float(134414 / 6378),
+            4: float(134414 / 134414),
+            5: float(134414 / 74874),
+            6: float(134414 / 25759),
+            7: float(134414 / 14090),
         }
-    print('** classes indices: **', training_data.class_indices)
+        print('** loaded class weights **', class_weights)
 
     model.fit(training_data,
               epochs=model_parameters['number_epochs'],
