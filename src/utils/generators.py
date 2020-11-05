@@ -76,13 +76,13 @@ def get_generator(dataset_parameters,
 
         validation_dataframe = pd.read_csv(validation_csv_file)
 
+        print(dataset_parameters['class_names'])
         validation_generator = validation_data_generator.flow_from_dataframe(
             dataframe=validation_dataframe,
             directory=validation_directory,
             x_col='subDirectory_filePath',
             y_col=dataset_parameters['class_label'],
             class_mode='categorical',
-            classes=dataset_parameters['class_names'],
             target_size=(model_parameters['image_height'],
                          model_parameters['image_width']),
             batch_size=model_parameters['batch_size'],
