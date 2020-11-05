@@ -40,15 +40,23 @@ def plot_metrics(metrics_path: str, plot_name: str, path_name: str):
     np.insert(val_accuracies, 0, 0)
     size = np.shape(losses_epoch)[0]
 
-    ticks = size // 5
-    labels = [1, None, None, None, 5]
-    if ticks > 1:
+    # ticks = size // 5
+    # labels = [1, None, None, None, 5]
+    labels = [1]
+    """if ticks > 1:
         for tick_number in range(2, ticks + 1):
             labels.append(None)
             labels.append(None)
             labels.append(None)
             labels.append(None)
-            labels.append(5 * tick_number)
+            labels.append(5 * tick_number)"""
+    if size > 1:
+        for tick_number in range(2, size + 1):
+            if tick_number % 5 == 0 or tick_number == size + 1:
+                labels.append(tick_number)
+            else:
+                labels.append(None)
+
     print(labels)
     epoch_size = size + 1
     # plot the training + testing loss and accuracy

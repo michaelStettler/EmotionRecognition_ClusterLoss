@@ -67,11 +67,25 @@ def train_model(model_configuration: str,
     callbacks_list.append(history)
     callbacks_list.append(CustomPrintCallback())
 
+    class_weights = None
+    if model_parameters['class_weights']:
+        class_weights = {
+            0: float(287650 / 74874),
+            1: float(287650 / 134414),
+            2: float(287650 / 25459),
+            3: float(287650 / 14090),
+            4: float(287650 / 6378),
+            5: float(287650 / 3803),
+            6: float(287650 / 24882),
+            7: float(287650 / 3750),
+        }
+
     model.fit(training_data,
               epochs=model_parameters['number_epochs'],
               validation_data=validation_data,
               validation_steps=128,
               callbacks=callbacks_list,
+              class_weights=class_weights,
               workers=12)
 
     save_metrics(history, metrics)
