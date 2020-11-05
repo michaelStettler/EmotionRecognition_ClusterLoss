@@ -80,6 +80,7 @@ def train_model(model_configuration: str,
             6: float(134414 / 24882),
             7: float(134414 / 3750),
         }
+    print('** classes indices: **', training_data.class_indices)
 
     model.fit(training_data,
               epochs=model_parameters['number_epochs'],
