@@ -69,15 +69,16 @@ def train_model(model_configuration: str,
 
     class_weights = None
     if model_parameters['class_weights']:
+        print('** loaded class weights **')
         class_weights = {
-            0: float(287650 / 74874),
-            1: float(287650 / 134414),
-            2: float(287650 / 25459),
-            3: float(287650 / 14090),
-            4: float(287650 / 6378),
-            5: float(287650 / 3803),
-            6: float(287650 / 24882),
-            7: float(287650 / 3750),
+            0: float(134414 / 74874),
+            1: float(134414 / 134414),
+            2: float(134414 / 25459),
+            3: float(134414 / 14090),
+            4: float(134414 / 6378),
+            5: float(134414 / 3803),
+            6: float(134414 / 24882),
+            7: float(134414 / 3750),
         }
 
     model.fit(training_data,
