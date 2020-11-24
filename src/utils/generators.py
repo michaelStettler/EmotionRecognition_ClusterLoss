@@ -8,14 +8,15 @@ from sklearn.datasets import make_blobs
 from tensorflow.python.keras.preprocessing.image_dataset import \
     image_dataset_from_directory
 
-sys.path.insert(0, './')
-from data_augmentation import *
+sys.path.insert(0, '../')
+from src.utils.data_augmentation import *
 
 
 def get_generator(dataset_parameters,
                   model_parameters,
                   computer_parameters,
                   only_validation: bool = False):
+
     num_classes = dataset_parameters['num_classes']
     training_data_generator = get_data_generator(dataset_parameters)
     validation_data_generator = get_data_generator(dataset_parameters, False)
@@ -49,10 +50,10 @@ def get_generator(dataset_parameters,
 
     elif 'csv' in dataset_parameters['labels_type']:
         if not only_validation:
-            training_csv_file = computer_parameters['dataset_path'] + \
-                                dataset_parameters['csv_training_file']
-            training_directory = computer_parameters['dataset_path'] + \
-                                 dataset_parameters['training_directory']
+            training_csv_file = os.path.join(computer_parameters['dataset_path'],
+                                             dataset_parameters['csv_training_file'])
+            training_directory = os.path.join(computer_parameters['dataset_path'],
+                                              dataset_parameters['training_directory'])
 
             training_dataframe = pd.read_csv(training_csv_file)
 
@@ -68,10 +69,10 @@ def get_generator(dataset_parameters,
                 shuffle=True
             )
 
-        validation_csv_file = computer_parameters['dataset_path'] + \
-                              dataset_parameters['csv_validation_file']
-        validation_directory = computer_parameters['dataset_path'] + \
-                               dataset_parameters['validation_directory']
+        validation_csv_file = os.path.join(computer_parameters['dataset_path'],
+                                           dataset_parameters['csv_validation_file'])
+        validation_directory = os.path.join(computer_parameters['dataset_path'],
+                                            dataset_parameters['validation_directory'])
 
         validation_dataframe = pd.read_csv(validation_csv_file)
 
@@ -153,3 +154,70 @@ def get_generator(dataset_parameters,
         )
 
     return training_generator, validation_generator
+
+
+def get_cluster_generator(dataset_parameters,
+                          model_parameters,
+                          computer_parameters,
+                          only_validation: bool = False):
+
+    # get generator
+    train_gen, val_gen = get_generator(dataset_parameters,
+                                       model_parameters,
+                                       computer_parameters,
+                                       only_validation)
+
+    def cluster_generator(generator):
+        print("come to train generator")
+        # suffled indices
+        idx = np.random.permutation(287650)  # todo set size
+
+        while True:
+            batch = generator.next()
+            img = batch[0]
+            labels = batch[1]
+            cluster = np.zeros(model_parameters['batch_size'])
+
+            yield ([img, labels], [labels, cluster])
+
+            idx += model_parameters['batch_size']
+            if idx >= 287650:
+                break
+
+
+
+    training_generator = cluster_generator(train_gen)
+    validation_generator = cluster_generator(val_gen)
+
+    return training_generator, validation_generator
+
+
+
+
+    # https://github.com/keras-team/keras/issues/3386
+    # while True:
+    #     # suffled indices
+    #     idx = np.random.permutation(X.shape[0])
+    #     # create image generator
+    #     datagen = ImageDataGenerator(
+    #         featurewise_center=False,  # set input mean to 0 over the dataset
+    #         samplewise_center=False,  # set each sample mean to 0
+    #         featurewise_std_normalization=False,  # divide inputs by std of the dataset
+    #         samplewise_std_normalization=False,  # divide each input by its std
+    #         zca_whitening=False,  # apply ZCA whitening
+    #         rotation_range=10,  # 180,  # randomly rotate images in the range (degrees, 0 to 180)
+    #         width_shift_range=0.1,  # 0.1,  # randomly shift images horizontally (fraction of total width)
+    #         height_shift_range=0.1,  # 0.1,  # randomly shift images vertically (fraction of total height)
+    #         horizontal_flip=False,  # randomly flip images
+    #         vertical_flip=False)  # randomly flip images
+    #
+    #     batches = datagen.flow(X[idx], Y[idx], batch_size=64, shuffle=False)
+    #     idx0 = 0
+    #     for batch in batches:
+    #         idx1 = idx0 + batch[0].shape[0]
+    #
+    #         yield [batch[0], I[idx[idx0:idx1]]], batch[1]
+    #
+    #         idx0 = idx1
+    #         if idx1 >= X.shape[0]:
+    #             break

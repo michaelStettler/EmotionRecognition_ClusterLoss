@@ -7,14 +7,15 @@ from datetime import datetime
 import tensorflow as tf
 import numpy as np
 
-sys.path.insert(0, '../utils')
-from model_utility_multi import *
-from generators import *
-from data_collection import *
+sys.path.insert(0, '../../')  # add src directory
+from src.utils.model_utility_multi import load_model
+from src.utils.generators import get_generator
+from src.utils.data_collection import LossHistory
+from src.utils.data_collection import save_metrics
 
-sys.path.insert(0, '../utils/callbacks')
-from lr_callback import *
-from print_callback import *
+from src.utils.callbacks.lr_callback import lr_schedule
+from src.utils.callbacks.lr_callback import CustomLearningRateScheduler
+from src.utils.callbacks.print_callback import CustomPrintCallback
 
 
 def train_model(model_configuration: str,
@@ -38,6 +39,7 @@ def train_model(model_configuration: str,
     # model template serves to save the model even with multi GPU training
     model = load_model(model_parameters,
                        dataset_parameters)
+    # tf.keras.utils.plot_model(model)
 
     # create the training and validation data
     training_data, validation_data = get_generator(dataset_parameters,
@@ -123,7 +125,8 @@ if __name__ == '__main__':
     # runtime initialization will not allocate all memory on the device
     physical_devices = tf.config.experimental.list_physical_devices('GPU')
     try:
-        tf.config.experimental.set_memory_growth(physical_devices[0], True)
+        for gpu in physical_devices:
+            tf.config.experimental.set_memory_growth(gpu, True)
         print('** set memory growth **')
     except:
         print('Invalid device or cannot modify ' +

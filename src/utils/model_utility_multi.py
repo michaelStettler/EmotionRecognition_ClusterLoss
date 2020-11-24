@@ -1,5 +1,9 @@
 import tensorflow as tf
 
+from src.utils.convert_json_dict import convert_keys_to_int
+from src.model_functions.WeightedSoftmaxCluster import SparseClusterLayer
+from src.model_functions.WeightedSoftmaxCluster import WeightedClusterLoss
+
 
 def load_model(model_parameters, dataset_parameters):
     # setup for multi gpu
@@ -48,6 +52,17 @@ def load_model(model_parameters, dataset_parameters):
                 classifier_activation=model_parameters['activation']
             )
 
+        elif model_parameters['model_name'] == 'resnet50v2_ClusterLoss':
+            print('** loaded resnet50v2 ClusterLoss**')
+            model_template = tf.keras.applications.ResNet50V2(
+                include_top=model_parameters['include_top'],
+                weights=model_parameters['weights'],
+                input_shape=(model_parameters['image_width'],
+                             model_parameters['image_height'],
+                             3),
+                classifier_activation=model_parameters['activation']
+            )
+
         elif model_parameters['model_name'] == 'resnet101':
             model_template = tf.keras.applications.ResNet101(
                 include_top=model_parameters['include_top'],
@@ -57,6 +72,12 @@ def load_model(model_parameters, dataset_parameters):
                              3),
                 classes=dataset_parameters['num_classes']
             )
+        elif model_parameters['model_name'] == 'CORnet_S':
+            from src.models.CORnet_S import CORnet_S
+            model_template = CORnet_S(classes=dataset_parameters['num_classes'],
+                                      from_logits=model_parameters['from_logits'])
+        else:
+            raise ValueError("Model does not exists in load_model")
 
         if model_parameters['l2_regularization']:
             # adds a l2 kernel regularization to each conv2D layer
@@ -73,10 +94,25 @@ def load_model(model_parameters, dataset_parameters):
             print('** loss is categorical_crossentropy, from logits is {}'
                   .format(model_parameters['from_logits']))
 
+        # -------------------------------------------------------------------------------------------------------------
+        # add cluster
+        cl_weights = [float(134414 / 24882), float(134414 / 3750), float(134414 / 3803), float(134414 / 6378),
+                      float(134414 / 134414), float(134414 / 74874), float(134414 / 25759), float(134414 / 14090)]
+
+        labels = tf.keras.Input(shape=(1,), dtype='int32')
+        inputs = tf.keras.Input(shape=(224, 224, 3), dtype='float32')
+        x = model_template(inputs)
+        output = tf.keras.layers.Dense(dataset_parameters['num_classes'], name='output')(x)
+        cluster = SparseClusterLayer(num_classes=dataset_parameters['num_classes'],
+                                     class_weight=cl_weights,
+                                     name='cluster')([x, labels])
+        model = tf.keras.Model(inputs=[inputs, labels], outputs=[output, cluster])
+        print("Cluster layers added")
+
         # compile the model
-        model_template.compile(loss=loss,
+        model.compile(loss={'output': loss, 'cluster': WeightedClusterLoss(cl_weights)},
                                optimizer=optimizer,
-                               metrics=['mae', 'accuracy'])
+                               metrics={'output': ['mae', 'accuracy']})
 
     # return the model template for saving issues with multi GPU
-    return model_template
+    return model

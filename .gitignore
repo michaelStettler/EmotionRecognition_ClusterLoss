@@ -138,6 +138,7 @@ dmypy.json
 cython_debug/
 
 # Project related
+.idea/
 src/weights/blob
 src/weights/AffectNet
 src/weights/cifar10

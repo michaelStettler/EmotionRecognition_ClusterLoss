@@ -7,33 +7,34 @@ from datetime import datetime
 import tensorflow as tf
 import numpy as np
 
-sys.path.insert(0, '../utils')
 from src.utils.model_utility_multi import load_model
-from src.utils.generators import get_generator
+from src.utils.generators import get_cluster_generator
 from src.utils.data_collection import LossHistory
 from src.utils.data_collection import save_metrics
 
-sys.path.insert(0, '../utils/callbacks')
 from src.utils.callbacks.lr_callback import CustomLearningRateScheduler
 from src.utils.callbacks.lr_callback import lr_schedule
 from src.utils.callbacks.print_callback import CustomPrintCallback
+
+from src.model_functions.WeightedSoftmaxCluster import SparseClusterLayer
+from src.model_functions.WeightedSoftmaxCluster import WeightedClusterLoss
 
 
 def train_model(model_configuration: str,
                 dataset_configuration: str,
                 computer_configuration: str):
     # loads name, image width/ height and l2_reg data
-    with open('../configuration/model/{}.json'
+    with open('src/configuration/model/{}.json'
                       .format(model_configuration)) as json_file:
         model_parameters = json.load(json_file)
 
     # loads data, number of gpus
-    with open('../configuration/computer/{}.json'
+    with open('src/configuration/computer/{}.json'
                       .format(computer_configuration)) as json_file:
         computer_parameters = json.load(json_file)
 
     # loads n_classes, labels, class names, etc.
-    with open('../configuration/dataset/{}.json'
+    with open('src/configuration/dataset/{}.json'
                       .format(dataset_configuration)) as json_file:
         dataset_parameters = json.load(json_file)
 
@@ -42,7 +43,7 @@ def train_model(model_configuration: str,
                        dataset_parameters)
 
     # create the training and validation data
-    training_data, validation_data = get_generator(dataset_parameters,
+    training_data, validation_data = get_cluster_generator(dataset_parameters,
                                                    model_parameters,
                                                    computer_parameters)
 
@@ -84,12 +85,13 @@ def train_model(model_configuration: str,
         }
         print('** loaded class weights **', class_weights)
 
+    print(model.summary())
     model.fit(training_data,
               epochs=model_parameters['number_epochs'],
               validation_data=validation_data,
               validation_steps=128,
               callbacks=callbacks_list,
-              class_weight=class_weights,
+              class_weight={'output': class_weights},
               workers=12)
 
     save_metrics(history, metrics)
@@ -121,11 +123,11 @@ def train_model(model_configuration: str,
 
 
 if __name__ == '__main__':
-
     # runtime initialization will not allocate all memory on the device
     physical_devices = tf.config.experimental.list_physical_devices('GPU')
     try:
-        tf.config.experimental.set_memory_growth(physical_devices[0], True)
+        for gpu in physical_devices:
+            tf.config.experimental.set_memory_growth(gpu, True)
         print('** set memory growth **')
     except:
         print('Invalid device or cannot modify ' +
