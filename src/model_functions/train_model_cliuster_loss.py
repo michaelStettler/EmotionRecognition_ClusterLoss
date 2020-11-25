@@ -20,6 +20,11 @@ from src.model_functions.WeightedSoftmaxCluster import SparseClusterLayer
 from src.model_functions.WeightedSoftmaxCluster import WeightedClusterLoss
 
 
+"""
+python -m src.model_functions.train_model_cliuster_loss -m resnet50v2_clustLoss -d affectnet -c blue
+
+"""
+
 def train_model(model_configuration: str,
                 dataset_configuration: str,
                 computer_configuration: str):
@@ -70,7 +75,7 @@ def train_model(model_configuration: str,
     callbacks_list.append(history)
     callbacks_list.append(CustomPrintCallback())
 
-    print('** classes indices: **', training_data.class_indices)
+    # print('** classes indices: **', training_data.class_indices)
     class_weights = None
     if model_parameters['class_weights']:
         class_weights = {
@@ -85,41 +90,49 @@ def train_model(model_configuration: str,
         }
         print('** loaded class weights **', class_weights)
 
-    print(model.summary())
+    # print(model.summary())
+    # test generator
+    next(training_data)
+    # print(batch)
+    # img = batch['inputs']
+    # labels = batch[1]
+    # print("shape img", np.shape(img))
+    # print("shape labels", np.shape(labels))
     model.fit(training_data,
               epochs=model_parameters['number_epochs'],
               validation_data=validation_data,
               validation_steps=128,
               callbacks=callbacks_list,
-              class_weight={'output': class_weights},
-              workers=12)
-
-    save_metrics(history, metrics)
-
-    evaluation = model.evaluate(validation_data,
-                                workers=12,
-                                verbose=1)
-
-    print("evaluation", evaluation)
-
-    weight_path = '../weights/{}'.format(dataset_parameters['dataset_name'])
-    if not os.path.exists(weight_path):
-        os.mkdir(weight_path)
-    metric_path = '../metrics/{}'.format(dataset_parameters['dataset_name'])
-    if not os.path.exists(metric_path):
-        os.mkdir(metric_path)
-
-    model.save(weight_path + '/{}_{}_{}_{}'.format(
-        model_configuration,
-        dataset_configuration,
-        computer_configuration,
-        datetime.now().strftime("%Y-%m-%d_%H-%M")))
-
-    np.save(metric_path + '/{}_{}_{}_{}'.format(
-        model_configuration,
-        dataset_configuration,
-        computer_configuration,
-        datetime.now().strftime("%Y-%m-%d_%H-%M")), metrics)
+              # class_weight=class_weights,
+              # workers=12
+              )
+    #
+    # save_metrics(history, metrics)
+    #
+    # evaluation = model.evaluate(validation_data,
+    #                             # workers=12,
+    #                             verbose=1)
+    #
+    # print("evaluation", evaluation)
+    #
+    # weight_path = '../weights/{}'.format(dataset_parameters['dataset_name'])
+    # if not os.path.exists(weight_path):
+    #     os.mkdir(weight_path)
+    # metric_path = '../metrics/{}'.format(dataset_parameters['dataset_name'])
+    # if not os.path.exists(metric_path):
+    #     os.mkdir(metric_path)
+    #
+    # model.save(weight_path + '/{}_{}_{}_{}'.format(
+    #     model_configuration,
+    #     dataset_configuration,
+    #     computer_configuration,
+    #     datetime.now().strftime("%Y-%m-%d_%H-%M")))
+    #
+    # np.save(metric_path + '/{}_{}_{}_{}'.format(
+    #     model_configuration,
+    #     dataset_configuration,
+    #     computer_configuration,
+    #     datetime.now().strftime("%Y-%m-%d_%H-%M")), metrics)
 
 
 if __name__ == '__main__':

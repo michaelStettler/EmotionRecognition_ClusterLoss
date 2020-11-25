@@ -167,32 +167,35 @@ def get_cluster_generator(dataset_parameters,
                                        computer_parameters,
                                        only_validation)
 
-    def cluster_generator(generator):
-        print("come to train generator")
-        # suffled indices
-        idx = np.random.permutation(287650)  # todo set size
+    def cluster_generator(generator, batch_size, num_entry):
+        iter = 0
 
         while True:
             batch = generator.next()
             img = batch[0]
             labels = batch[1]
-            cluster = np.zeros(model_parameters['batch_size'])
+            cluster = np.zeros(batch_size)
 
-            yield ([img, labels], [labels, cluster])
+            print("[gen] shape img", np.shape(img))
+            print("[gen] shape labels", np.shape(labels))
+            print(labels)
+            # x = {'inputs': img, 'labels': labels}
+            # y = {'output': labels, 'cluster': cluster}
 
-            idx += model_parameters['batch_size']
-            if idx >= 287650:
-                break
+            x = [img, labels]
+            y = [labels, cluster]
+            yield x, y
 
+            # iter += batch_size
+            # if iter >= num_entry:
+            #     break
 
-
-    training_generator = cluster_generator(train_gen)
-    validation_generator = cluster_generator(val_gen)
+    training_generator = cluster_generator(train_gen, model_parameters['batch_size'], 287650)
+    validation_generator = cluster_generator(val_gen, model_parameters['batch_size'], 4000)
 
     return training_generator, validation_generator
 
-
-
+    # https://github.com/keras-team/keras/issues/8130
 
     # https://github.com/keras-team/keras/issues/3386
     # while True:

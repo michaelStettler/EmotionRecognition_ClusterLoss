@@ -1,7 +1,8 @@
 import tensorflow as tf
 
 from src.utils.convert_json_dict import convert_keys_to_int
-from src.model_functions.WeightedSoftmaxCluster import SparseClusterLayer
+from src.model_functions.WeightedSoftmaxCluster import ClusterLayer
+from src.model_functions.WeightedSoftmaxCluster import WeightedSoftmaxLoss2
 from src.model_functions.WeightedSoftmaxCluster import WeightedClusterLoss
 
 
@@ -99,20 +100,21 @@ def load_model(model_parameters, dataset_parameters):
         cl_weights = [float(134414 / 24882), float(134414 / 3750), float(134414 / 3803), float(134414 / 6378),
                       float(134414 / 134414), float(134414 / 74874), float(134414 / 25759), float(134414 / 14090)]
 
-        labels = tf.keras.Input(shape=(1,), dtype='int32')
+        labels = tf.keras.Input(shape=(dataset_parameters['num_classes'],), dtype='int32')
         inputs = tf.keras.Input(shape=(224, 224, 3), dtype='float32')
         x = model_template(inputs)
         output = tf.keras.layers.Dense(dataset_parameters['num_classes'], name='output')(x)
-        cluster = SparseClusterLayer(num_classes=dataset_parameters['num_classes'],
+        cluster = ClusterLayer(num_classes=dataset_parameters['num_classes'],
                                      class_weight=cl_weights,
                                      name='cluster')([x, labels])
         model = tf.keras.Model(inputs=[inputs, labels], outputs=[output, cluster])
         print("Cluster layers added")
 
         # compile the model
-        model.compile(loss={'output': loss, 'cluster': WeightedClusterLoss(cl_weights)},
-                               optimizer=optimizer,
-                               metrics={'output': ['mae', 'accuracy']})
+        model.compile(loss={'output': WeightedSoftmaxLoss2(10, cl_weights, from_logits=True),
+                            'cluster': WeightedClusterLoss(cl_weights)},
+                      optimizer=optimizer,
+                      metrics={'output': ['mae', tf.keras.metrics.CategoricalAccuracy()]})
 
     # return the model template for saving issues with multi GPU
     return model
