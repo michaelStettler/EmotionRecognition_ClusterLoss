@@ -6,6 +6,7 @@ from tensorflow.keras import datasets
 
 from src.model_functions.WeightedSoftmaxCluster import SparseClusterLayer
 from src.model_functions.WeightedSoftmaxCluster import SparseWeightedSoftmaxLoss
+from src.model_functions.WeightedSoftmaxCluster import SparseWeightedSoftmaxLoss2
 from src.model_functions.WeightedSoftmaxCluster import WeightedClusterLoss
 
 from tensorflow.python.keras.utils.vis_utils import plot_model
@@ -57,9 +58,9 @@ train_cl = np.zeros((train_images.shape[0],))
 test_cl = np.zeros((test_images.shape[0],))
 
 model.compile(optimizer=tf.keras.optimizers.SGD(learning_rate=0.001, momentum=0.9),
-              loss={'output': tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-                    'cluster': WeightedClusterLoss(class_weights, _lambda=1.0)},
-              metrics={'output': ['accuracy']})
+              loss={'output': SparseWeightedSoftmaxLoss2(10, class_weights, from_logits=True),
+                    'cluster': WeightedClusterLoss(class_weights, _lambda=0.0)},
+              metrics={'output': [tf.keras.metrics.SparseCategoricalAccuracy()]})
 # model.train_on_batch([train_images[:32], train_labels[:32]], [train_labels[:32], train_cl[:32]])
 model.fit([train_images, train_labels], [train_labels, train_cl],
           epochs=35,

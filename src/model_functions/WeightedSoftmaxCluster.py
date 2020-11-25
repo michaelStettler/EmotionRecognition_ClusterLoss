@@ -135,6 +135,45 @@ class SparseWeightedSoftmaxLoss(Loss):
         return tf.multiply(y_true, tf.math.log(y_pred))
 
 
+class SparseWeightedSoftmaxLoss2(Loss):
+
+    def __init__(self, num_classes, class_weights, from_logits=False):
+        super().__init__()
+        self.class_weights = tf.expand_dims(class_weights, axis=1)
+        self.num_classes = num_classes
+        self.from_logits = from_logits
+
+        if self.from_logits:
+            self.loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True,
+                                                                      reduction=tf.keras.losses.Reduction.NONE)
+        else:
+            self.loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False,
+                                                                      reduction=tf.keras.losses.Reduction.NONE)
+
+    def call(self, y_true, y_pred):
+        loss = self.loss(y_true, y_pred)
+        loss = tf.expand_dims(loss, axis=1)
+
+        # cast y_true to one hot
+        y_true = tf.cast(y_true, dtype=tf.uint8)
+        y_true = tf.one_hot(y_true, self.num_classes)
+        y_true = tf.cast(y_true, dtype='float32')
+        y_true = tf.squeeze(y_true)
+
+        # get batch_size
+        batch_size = tf.cast(tf.shape(y_pred)[0], dtype=y_pred.dtype)
+
+        # get batch weights
+        weights = tf.matmul(y_true, self.class_weights)
+
+        # compute weighted loss
+        weighted_loss = tf.multiply(weights, loss)
+
+        red_loss = tf.reduce_sum(weighted_loss)
+
+        return red_loss / batch_size
+
+
 class WeightedClusterLoss(Loss):
     def __init__(self, class_weights, _lambda=1):
         super().__init__()
@@ -148,6 +187,8 @@ class WeightedClusterLoss(Loss):
 
 
 if __name__ == '__main__':
+    import numpy as np
+
     # ************************************   TEST  Layer  *******************************
     x = tf.convert_to_tensor([[0.2, 0.3, 0.4, 0.5], [0.1, 0.2, 0.3, 0.4]])
     cw = tf.convert_to_tensor([.5, .5, 2])
@@ -178,6 +219,10 @@ if __name__ == '__main__':
     scce = SparseWeightedSoftmaxLoss(3, [1., 1., 1.], from_logits=True)
     loss = scce(y_true, y_pred).numpy()
     print("SparseWeightedSoftmaxLoss", loss)
+
+    scce = SparseWeightedSoftmaxLoss2(3, [1., 1., 1.], from_logits=True)
+    loss = scce(y_true, y_pred).numpy()
+    print("SparseWeightedSoftmaxLoss2", loss)
 
     scce = WeightedClusterLoss([1., 1., 1.])
     loss = scce(y_true, y_pred).numpy()
