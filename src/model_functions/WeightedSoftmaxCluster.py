@@ -33,41 +33,39 @@ class ClusterLayer(Layer):
         # split input
         features = x[0]
         labels = x[1]
-        features = tf.expand_dims(features, axis=1)
+        labels = tf.cast(labels, dtype=features.dtype)
 
         # ------------------- compute Loss --------------------
         # compute numerator
         ci = tf.gather(self.cluster, tf.argmax(labels, axis=1), axis=0)
-        nume = tf.pow(tf.norm(features - ci, axis=2), 2)
+        nume = tf.pow(tf.norm(features - ci, axis=1), 2)
 
         # compute denominator
         cj = tf.reshape(self.cluster, [-1])  # flatten cj
-        cj = tf.expand_dims(cj, axis=0)  # add extra axis
         cj = tf.repeat(tf.expand_dims(cj, axis=0), tf.shape(labels)[0], axis=0)  # expand and repeats
-        ci_tile = tf.tile(ci, [1, 1, self.num_classes])
-        denom = tf.pow(tf.norm(cj - ci_tile, axis=2), 2) + self.alpha
+        ci_tile = tf.tile(ci, [1, self.num_classes])
+        denom = tf.pow(tf.norm(cj - ci_tile, axis=1), 2) + self.alpha
 
-        loss = nume / denom
+        loss = tf.expand_dims(nume / denom, axis=1)  # make sure to have a second dimensions
 
         # ------------------- Update cluster --------------------
         # compute numerator
-        labels_tile = tf.repeat(tf.expand_dims(labels, axis=3), tf.shape(features)[-1], axis=3)
+        labels_tile = tf.repeat(tf.expand_dims(labels, axis=2), tf.shape(features)[-1], axis=2)
         cluster = tf.expand_dims(self.cluster, axis=0)
         cj = tf.multiply(labels_tile, cluster)
-        xj = tf.repeat(tf.expand_dims(features, axis=2), self.num_classes, axis=2)
+        xj = tf.repeat(tf.expand_dims(features, axis=1), self.num_classes, axis=1)
         xj = tf.multiply(labels_tile, xj)
         nume = xj - cj
 
         # compute denominator
-        denom = tf.repeat(tf.expand_dims(denom, axis=2), self.num_classes, axis=2)
-        denom = tf.repeat(tf.expand_dims(denom, axis=3), tf.shape(features)[-1], axis=3)
+        denom = tf.repeat(tf.expand_dims(denom, axis=1), self.num_classes, axis=1)
+        denom = tf.repeat(tf.expand_dims(denom, axis=2), tf.shape(features)[-1], axis=2)
 
         # compute delta center and apply weights
         delta_c = nume / denom
-        cw = tf.expand_dims(self.class_weight, axis=0)  # add extra axis
-        cw = tf.repeat(tf.expand_dims(cw, axis=0), tf.shape(labels)[0], axis=0)
-        cw = tf.multiply(labels_one_hot, cw)
-        cw = tf.repeat(tf.expand_dims(cw, axis=3), features.shape[1], axis=3)
+        cw = tf.repeat(tf.expand_dims(self.class_weight, axis=0), tf.shape(labels)[0], axis=0)
+        cw = tf.multiply(labels, cw)
+        cw = tf.repeat(tf.expand_dims(cw, axis=2), features.shape[1], axis=2)
         weighted_delta_c = tf.multiply(cw, delta_c)
         weighted_delta_c = tf.reduce_sum(weighted_delta_c, axis=0)
 
@@ -78,6 +76,7 @@ class ClusterLayer(Layer):
 
         # return loss
         return loss
+
 
 # create Custom Cluster layer
 class SparseClusterLayer(Layer):
@@ -221,6 +220,8 @@ class WeightedSoftmaxLoss2(Loss):
                                                                       reduction=tf.keras.losses.Reduction.NONE)
 
     def call(self, y_true, y_pred):
+        y_true = tf.cast(y_true, dtype=y_pred.dtype)
+
         loss = self.loss(y_true, y_pred)
         loss = tf.expand_dims(loss, axis=1)
 
@@ -292,7 +293,22 @@ class WeightedClusterLoss(Loss):
 if __name__ == '__main__':
     import numpy as np
 
-    # ************************************   TEST  Layer  *******************************
+    # ************************************   TEST Layer  *******************************
+    x = tf.convert_to_tensor([[0.2, 0.3, 0.4, 0.5], [0.1, 0.2, 0.3, 0.4]])
+    cw = tf.convert_to_tensor([.5, .5, 2])
+    y_true = tf.convert_to_tensor([[0, 1, 0], [0, 0, 1]])
+    print("shape y_true", np.shape(y_true))
+    x_shape = tf.TensorShape((None, 4))
+    label_shape = tf.TensorShape((None, 3))
+    input_shape = [x_shape, label_shape]
+    cl_layer = ClusterLayer(num_classes=3, class_weight=cw, name='clusterlosslayer')
+    cl_layer.build(input_shape)
+    res = cl_layer([x, y_true])
+    print("res", res.shape)
+    print(res)
+    print()
+
+    # ************************************   TEST  Sparse Layer  *******************************
     x = tf.convert_to_tensor([[0.2, 0.3, 0.4, 0.5], [0.1, 0.2, 0.3, 0.4]])
     cw = tf.convert_to_tensor([.5, .5, 2])
     y_true = tf.convert_to_tensor([1, 2])
@@ -308,7 +324,22 @@ if __name__ == '__main__':
     print(res)
     print()
 
-    # ************************************   TEST LOSS   *******************************
+
+    # ************************************   TEST Softmax LOSS   *******************************
+    y_true = tf.convert_to_tensor([[0, 1, 0], [0, 0, 1]])
+    print("[declare] shape y_true", y_true.shape)
+    y_pred = tf.convert_to_tensor([[0.05, 0.95, 0], [0.1, 0.8, 0.1]])
+    centers = tf.convert_to_tensor([[0.1, 0.2, 0.3, 0.4], [0.5, 0.6, 0.7, 0.8]])
+    x = tf.convert_to_tensor([[0.2, 0.3, 0.4, 0.5], [0.1, 0.2, 0.3, 0.4]])
+    scce = tf.keras.losses.CategoricalCrossentropy(from_logits=True)
+    loss = scce(y_true, y_pred).numpy()
+    print("CategoricalCrossentropy", loss)
+
+    scce = WeightedSoftmaxLoss2(3, [1., 1., 1.], from_logits=True)
+    loss = scce(y_true, y_pred).numpy()
+    print("WeightedSoftmaxLoss", loss)
+
+    # ************************************   TEST Sparse Softmax LOSS   *******************************
     y_true = tf.convert_to_tensor([1, 2])
     y_true = tf.expand_dims(y_true, axis=1)
     print("[declare] shape y_true", y_true.shape)
@@ -327,6 +358,7 @@ if __name__ == '__main__':
     loss = scce(y_true, y_pred).numpy()
     print("SparseWeightedSoftmaxLoss2", loss)
 
+    # ************************************   TEST Cluster LOSS   *******************************
     scce = WeightedClusterLoss([1., 1., 1.])
     loss = scce(y_true, y_pred).numpy()
     print("WeightedClusterLoss", loss)
