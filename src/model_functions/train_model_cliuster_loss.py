@@ -92,17 +92,14 @@ def train_model(model_configuration: str,
 
     # print(model.summary())
     # test generator
-    next(training_data)
-    # print(batch)
-    # img = batch['inputs']
-    # labels = batch[1]
-    # print("shape img", np.shape(img))
-    # print("shape labels", np.shape(labels))
+    # next(training_data)
+
     model.fit(training_data,
               epochs=model_parameters['number_epochs'],
               validation_data=validation_data,
               validation_steps=128,
               callbacks=callbacks_list,
+              steps_per_epoch=2876507/model_parameters['batch_size']
               # class_weight=class_weights,
               # workers=12
               )

@@ -89,12 +89,6 @@ def load_model(model_parameters, dataset_parameters):
                     layer.kernel_regularizer = tf.keras.regularizers. \
                         l2(model_parameters['l2_regularization'])
 
-        if model_parameters['loss'] == 'categorical_crossentropy':
-            loss = tf.keras.losses.CategoricalCrossentropy(
-                from_logits=model_parameters['from_logits'])
-            print('** loss is categorical_crossentropy, from logits is {}'
-                  .format(model_parameters['from_logits']))
-
         # -------------------------------------------------------------------------------------------------------------
         # add cluster
         cl_weights = [float(134414 / 24882), float(134414 / 3750), float(134414 / 3803), float(134414 / 6378),
@@ -108,11 +102,11 @@ def load_model(model_parameters, dataset_parameters):
                                      class_weight=cl_weights,
                                      name='cluster')([x, labels])
         model = tf.keras.Model(inputs=[inputs, labels], outputs=[output, cluster])
-        print("Cluster layers added")
+        print("Cluster layer added")
 
         # compile the model
         model.compile(loss={'output': WeightedSoftmaxLoss2(10, cl_weights, from_logits=True),
-                            'cluster': WeightedClusterLoss(cl_weights)},
+                            'cluster': WeightedClusterLoss(cl_weights, _lambda=0.5)},
                       optimizer=optimizer,
                       metrics={'output': ['mae', tf.keras.metrics.CategoricalAccuracy()]})
 

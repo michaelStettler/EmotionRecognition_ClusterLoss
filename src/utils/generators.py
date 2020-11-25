@@ -176,12 +176,6 @@ def get_cluster_generator(dataset_parameters,
             labels = batch[1]
             cluster = np.zeros(batch_size)
 
-            print("[gen] shape img", np.shape(img))
-            print("[gen] shape labels", np.shape(labels))
-            print(labels)
-            # x = {'inputs': img, 'labels': labels}
-            # y = {'output': labels, 'cluster': cluster}
-
             x = [img, labels]
             y = [labels, cluster]
             yield x, y
