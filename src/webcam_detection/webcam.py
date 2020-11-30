@@ -54,7 +54,8 @@ def webcam_detection(model_path: str):
 
     names = ['Neutral', 'Happiness', 'Sadness', 'Surprise', 'Fear',
              'Disgust', 'Anger', 'Contempt']
-
+    names = sorted(names)
+    
     model = tf.keras.models.load_model(model_path)
 
     # launch web cam
