@@ -102,16 +102,16 @@ def load_model(model_parameters, dataset_parameters):
             cluster = ClusterLayer(num_classes=dataset_parameters['num_classes'],
                                          class_weight=cl_weights,
                                          name='cluster')([x, labels])
-            model = tf.keras.Model(inputs=[inputs, labels], outputs=[output, cluster])
+            model_template = tf.keras.Model(inputs=[inputs, labels], outputs=[output, cluster])
             print("Cluster layer added")
 
             # compile the model
-            model.compile(loss={'output': WeightedSoftmaxLoss2(10, cl_weights, from_logits=True),
-                                'cluster': WeightedClusterLoss(cl_weights, _lambda=0.2)},
+            # model_template.compile(loss={'output': WeightedSoftmaxLoss2(10, cl_weights, from_logits=True),
+            model_template.compile(loss={'output': tf.keras.losses.CategoricalCrossentropy(from_logits=True),
+                                'cluster': WeightedClusterLoss(cl_weights, _lambda=0.0)},
                           optimizer=optimizer,
                           metrics={'output': ['mae', tf.keras.metrics.CategoricalAccuracy()]})
         else:
-            model = model_template
             if model_parameters['loss'] == 'categorical_crossentropy':
                 loss = tf.keras.losses.CategoricalCrossentropy(
                     from_logits=model_parameters['from_logits'])
@@ -119,10 +119,10 @@ def load_model(model_parameters, dataset_parameters):
                       .format(model_parameters['from_logits']))
 
             # compile the model
-            model.compile(loss=loss,
+            model_template.compile(loss=loss,
                                    optimizer=optimizer,
                                    metrics=['mae', 'accuracy'])
 
 
     # return the model template for saving issues with multi GPU
-    return model
+    return model_template
