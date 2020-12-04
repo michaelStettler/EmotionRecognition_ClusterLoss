@@ -91,7 +91,7 @@ def train_model(model_configuration: str,
         }
         print('** loaded class weights **', class_weights)
 
-    # print(model.summary())
+    print(model.summary())
     # test generator
     # next(training_data)
 
@@ -100,37 +100,40 @@ def train_model(model_configuration: str,
               validation_data=validation_data,
               validation_steps=128,
               callbacks=callbacks_list,
-              steps_per_epoch=2876507/model_parameters['batch_size']
+              steps_per_epoch=287650/model_parameters['batch_size'],
               # class_weight=class_weights,
-              # workers=12
+              workers=12,
+              use_multiprocessing=True
               )
-    #
-    # save_metrics(history, metrics)
-    #
-    # evaluation = model.evaluate(validation_data,
-    #                             # workers=12,
-    #                             verbose=1)
-    #
-    # print("evaluation", evaluation)
-    #
-    # weight_path = '../weights/{}'.format(dataset_parameters['dataset_name'])
-    # if not os.path.exists(weight_path):
-    #     os.mkdir(weight_path)
-    # metric_path = '../metrics/{}'.format(dataset_parameters['dataset_name'])
-    # if not os.path.exists(metric_path):
-    #     os.mkdir(metric_path)
-    #
-    # model.save(weight_path + '/{}_{}_{}_{}'.format(
-    #     model_configuration,
-    #     dataset_configuration,
-    #     computer_configuration,
-    #     datetime.now().strftime("%Y-%m-%d_%H-%M")))
-    #
-    # np.save(metric_path + '/{}_{}_{}_{}'.format(
-    #     model_configuration,
-    #     dataset_configuration,
-    #     computer_configuration,
-    #     datetime.now().strftime("%Y-%m-%d_%H-%M")), metrics)
+
+    save_metrics(history, metrics)
+
+    evaluation = model.evaluate(validation_data,
+                                workers=12,
+                                use_multiprocessing=True,
+                                steps=4000 / model_parameters['batch_size'],
+                                verbose=1)
+
+    print("evaluation", evaluation)
+
+    weight_path = 'src/weights/{}'.format(dataset_parameters['dataset_name'])
+    if not os.path.exists(weight_path):
+        os.mkdir(weight_path)
+    metric_path = 'src/metrics/{}'.format(dataset_parameters['dataset_name'])
+    if not os.path.exists(metric_path):
+        os.mkdir(metric_path)
+
+    model.save(weight_path + '/{}_{}_{}_{}'.format(
+        model_configuration,
+        dataset_configuration,
+        computer_configuration,
+        datetime.now().strftime("%Y-%m-%d_%H-%M")))
+
+    np.save(metric_path + '/{}_{}_{}_{}'.format(
+        model_configuration,
+        dataset_configuration,
+        computer_configuration,
+        datetime.now().strftime("%Y-%m-%d_%H-%M")), metrics)
 
 
 if __name__ == '__main__':

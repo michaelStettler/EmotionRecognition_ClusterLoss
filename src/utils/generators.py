@@ -66,7 +66,7 @@ def get_generator(dataset_parameters,
                 target_size=(model_parameters['image_height'],
                              model_parameters['image_width']),
                 batch_size=model_parameters['batch_size'],
-                shuffle=True
+                shuffle=False
             )
 
         validation_csv_file = os.path.join(computer_parameters['dataset_path'],
@@ -171,7 +171,7 @@ def get_cluster_generator(dataset_parameters,
         iter = 0
 
         while True:
-            batch = generator.next()
+            batch = next(generator)
             img = batch[0]
             labels = batch[1]
             cluster = np.zeros(batch_size)
