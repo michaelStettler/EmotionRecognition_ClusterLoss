@@ -7,7 +7,6 @@ from datetime import datetime
 import tensorflow as tf
 import numpy as np
 
-sys.path.insert(0, '../../')  # add src directory
 from src.utils.model_utility_multi import load_model
 from src.utils.generators import get_generator
 from src.utils.data_collection import LossHistory
