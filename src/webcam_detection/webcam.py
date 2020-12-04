@@ -6,8 +6,6 @@ import sys
 import numpy as np
 from PIL import Image
 
-sys.path.insert(0, '../utils')
-from model_utility_multi import *
 
 def cut_faces(image, faces_coord):
     faces = []
@@ -54,6 +52,7 @@ def webcam_detection(model_path: str):
 
     names = ['Neutral', 'Happiness', 'Sadness', 'Surprise', 'Fear',
              'Disgust', 'Anger', 'Contempt']
+    names = sorted(names)
 
     model = tf.keras.models.load_model(model_path)
 
@@ -69,9 +68,9 @@ def webcam_detection(model_path: str):
 
         faces = classifier.detectMultiScale(
             frame,
-            scaleFactor=1.3,
-            minNeighbors=5,
-            minSize=(50, 50),
+            scaleFactor=1.1,
+            minNeighbors=4,
+            minSize=(100, 100),
             flags=cv2.CASCADE_SCALE_IMAGE)
 
         predicted_name = 'unknown'
@@ -79,6 +78,10 @@ def webcam_detection(model_path: str):
             pass
         else:
             for (x, y, w, h) in faces:
+                x -= 30
+                y -= 30
+                w += 60
+                h += 60
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 255), 2)
             faces_only = normalize_faces(frame, faces)
             for face in faces_only:
@@ -96,6 +99,9 @@ def webcam_detection(model_path: str):
         #x -= 1.
         #x = np.expand_dims(x, axis=0)
         #prediction = model(x)
+
+            for i, item in enumerate(prediction[0]):
+                print(f'{names[i]}: {float(item)}')
             predicted_name = names[np.argmax(prediction)]
 
         # add text on the image
