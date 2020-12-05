@@ -21,17 +21,17 @@ def train_model(model_configuration: str,
                 dataset_configuration: str,
                 computer_configuration: str):
     # loads name, image width/ height and l2_reg data
-    with open('../configuration/model/{}.json'
+    with open('src/configuration/model/{}.json'
                       .format(model_configuration)) as json_file:
         model_parameters = json.load(json_file)
 
     # loads data, number of gpus
-    with open('../configuration/computer/{}.json'
+    with open('src/configuration/computer/{}.json'
                       .format(computer_configuration)) as json_file:
         computer_parameters = json.load(json_file)
 
     # loads n_classes, labels, class names, etc.
-    with open('../configuration/dataset/{}.json'
+    with open('src/configuration/dataset/{}.json'
                       .format(dataset_configuration)) as json_file:
         dataset_parameters = json.load(json_file)
 
