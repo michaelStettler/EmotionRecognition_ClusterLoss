@@ -89,6 +89,7 @@ def train_model(model_configuration: str,
               validation_steps=128,
               callbacks=callbacks_list,
               class_weight=class_weights,
+              use_multiprocessing=model_parameters['multiprocessing'],
               workers=12)
 
     save_metrics(history, metrics)
