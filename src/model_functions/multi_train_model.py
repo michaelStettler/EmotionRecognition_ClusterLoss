@@ -3,10 +3,10 @@ import tensorflow as tf
 from argparse import ArgumentParser
 
 from src.model_functions.train_model import *
-
+import gc
 
 if __name__ == '__main__':
-
+    gc.collect()
     # runtime initialization will not allocate all memory on the device
     physical_devices = tf.config.experimental.list_physical_devices('GPU')
     try:
