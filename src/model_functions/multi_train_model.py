@@ -1,8 +1,8 @@
 import sys
 import tensorflow as tf
 from argparse import ArgumentParser
-sys.path.insert(0, './')
-from train_model import *
+
+from src.model_functions.train_model import *
 
 
 if __name__ == '__main__':

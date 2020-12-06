@@ -100,10 +100,10 @@ def train_model(model_configuration: str,
 
     print("evaluation", evaluation)
 
-    weight_path = '../weights/{}'.format(dataset_parameters['dataset_name'])
+    weight_path = 'src/weights/{}'.format(dataset_parameters['dataset_name'])
     if not os.path.exists(weight_path):
         os.mkdir(weight_path)
-    metric_path = '../metrics/{}'.format(dataset_parameters['dataset_name'])
+    metric_path = 'src/metrics/{}'.format(dataset_parameters['dataset_name'])
     if not os.path.exists(metric_path):
         os.mkdir(metric_path)
 
