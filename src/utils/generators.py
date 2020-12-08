@@ -66,7 +66,7 @@ def get_generator(dataset_parameters,
                 target_size=(model_parameters['image_height'],
                              model_parameters['image_width']),
                 batch_size=model_parameters['batch_size'],
-                shuffle=False
+                shuffle=True
             )
 
         validation_csv_file = os.path.join(computer_parameters['dataset_path'],

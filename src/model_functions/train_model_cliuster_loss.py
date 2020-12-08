@@ -93,23 +93,25 @@ def train_model(model_configuration: str,
     print(model.summary())
     # test generator
     # next(training_data)
-
     model.fit(training_data,
               epochs=model_parameters['number_epochs'],
               validation_data=validation_data,
               validation_steps=128,
               callbacks=callbacks_list,
               steps_per_epoch=287650/model_parameters['batch_size'],
+              # steps_per_epoch=5000/model_parameters['batch_size'],
               # class_weight=class_weights,
-              workers=12,
-              use_multiprocessing=True
+              workers=1,
+              # workers=12,
+              use_multiprocessing=False
               )
+
 
     save_metrics(history, metrics)
 
     evaluation = model.evaluate(validation_data,
-                                workers=12,
-                                use_multiprocessing=True,
+                                workers=1,
+                                use_multiprocessing=False,
                                 steps=4000 / model_parameters['batch_size'],
                                 verbose=1)
 

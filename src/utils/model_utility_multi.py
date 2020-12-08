@@ -106,9 +106,9 @@ def load_model(model_parameters, dataset_parameters):
             print("Cluster layer added")
 
             # compile the model
-            # model_template.compile(loss={'output': WeightedSoftmaxLoss2(10, cl_weights, from_logits=True),
-            model_template.compile(loss={'output': tf.keras.losses.CategoricalCrossentropy(from_logits=True),
-                                'cluster': WeightedClusterLoss(cl_weights, _lambda=0.0)},
+            # model_template.compile(loss={'output': tf.keras.losses.CategoricalCrossentropy(from_logits=True),
+            model_template.compile(loss={'output': WeightedSoftmaxLoss2(10, cl_weights, from_logits=True),
+                                'cluster': WeightedClusterLoss(cl_weights, _lambda=1.0)},
                           optimizer=optimizer,
                           metrics={'output': ['mae', tf.keras.metrics.CategoricalAccuracy()]})
         else:
