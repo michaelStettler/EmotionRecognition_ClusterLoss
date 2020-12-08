@@ -68,7 +68,7 @@ test_cl = np.zeros((test_images.shape[0],))
 # test with Sparse labels
 model.compile(optimizer=tf.keras.optimizers.SGD(learning_rate=0.001, momentum=0.9),
               loss={'output': WeightedSoftmaxLoss2(10, class_weights, from_logits=True),
-                    'cluster': WeightedClusterLoss(class_weights, _lambda=1.0)},
+                    'cluster': WeightedClusterLoss(class_weights, _lambda=0.1)},
               metrics={'output': [tf.keras.metrics.CategoricalAccuracy()]})
 # model.train_on_batch([train_images[:32], train_labels[:32]], [train_labels[:32], train_cl[:32]])
 model.fit([train_images, train_labels], [train_labels, train_cl],
