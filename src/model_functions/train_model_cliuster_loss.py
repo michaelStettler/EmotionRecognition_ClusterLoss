@@ -22,6 +22,7 @@ from src.model_functions.WeightedSoftmaxCluster import WeightedClusterLoss
 
 """
 python -m src.model_functions.train_model_cliuster_loss -m resnet50v2_clustLoss -d affectnet -c blue
+python -m src.model_functions.train_model_cliuster_loss -m cluster_loss -d affectnet_aug_sub8 -c jannik
 
 """
 

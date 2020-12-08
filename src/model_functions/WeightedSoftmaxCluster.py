@@ -28,7 +28,6 @@ class ClusterLayer(Layer):
                                    trainable=False)
         super(ClusterLayer, self).build(input_shape)
 
-
     def call(self, x):
         # split input
         features = x[0]
@@ -288,6 +287,45 @@ class WeightedClusterLoss(Loss):
         # apply class weights and compute the sum
         cw = tf.repeat(tf.expand_dims(self.class_weights, axis=0), tf.shape(y_pred)[0], axis=0)
         return .5 * self._lambda * tf.reduce_sum(tf.multiply(cw, y_pred))
+
+
+import tensorflow.keras.backend as K
+class CenterLayer(Layer):
+    def __init__(self, num_classes, alpha_center, **kwargs):
+        super().__init__(**kwargs)
+        self.num_classes = num_classes
+        self.alpha_center = alpha_center
+
+    def build(self, input_shape):
+        # split input
+        features = input_shape[0]
+
+        # Create a trainable weight variable for this layer
+        self.centers = self.add_weight(name='centers',
+                                       shape=(self.num_classes, features[-1]),
+                                       initializer='uniform',
+                                       trainable=False)
+        super().build(input_shape)
+
+    def call(self, x):
+        # split data
+        y_pred = x[0]
+        y_true = x[1]
+
+        # # transform to one hot encoding
+        # y_true = tf.cast(y_true, dtype=tf.uint8)
+        # y_true = tf.one_hot(y_true, self.num_classes)
+        # y_true = tf.cast(y_true, dtype='float32')
+        # y_true = tf.reshape(y_true, shape=(tf.shape(y_true)[0], self.num_classes))
+
+        # compute center loss
+        delta_centers = K.dot(tf.transpose(y_true), (K.dot(y_true, self.centers) - y_pred))
+        denominator = K.sum(tf.transpose(y_true), axis=1, keepdims=True) + 1
+        delta_centers /= denominator
+        new_centers = self.centers - self.alpha_center * delta_centers
+        self.add_update((self.centers, new_centers))
+        result = (K.dot(y_true, self.centers) - y_pred)
+        return K.sum(result ** 2, axis=1, keepdims=True)
 
 
 if __name__ == '__main__':

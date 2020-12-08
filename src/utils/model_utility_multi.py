@@ -76,7 +76,8 @@ def load_model(model_parameters, dataset_parameters):
         elif model_parameters['model_name'] == 'CORnet_S':
             from src.models.CORnet_S import CORnet_S
             model_template = CORnet_S(classes=dataset_parameters['num_classes'],
-                                      from_logits=model_parameters['from_logits'])
+                                      from_logits=model_parameters[
+                                          'from_logits'])
         else:
             raise ValueError("Model does not exists in load_model")
 
@@ -92,17 +93,23 @@ def load_model(model_parameters, dataset_parameters):
         if model_parameters['use_cluster_loss']:
             # -------------------------------------------------------------------------------------------------------------
             # add cluster
-            cl_weights = [float(134414 / 24882), float(134414 / 3750), float(134414 / 3803), float(134414 / 6378),
-                          float(134414 / 134414), float(134414 / 74874), float(134414 / 25759), float(134414 / 14090)]
+            cl_weights = [float(134414 / 24882), float(134414 / 3750),
+                          float(134414 / 3803), float(134414 / 6378),
+                          float(134414 / 134414), float(134414 / 74874),
+                          float(134414 / 25759), float(134414 / 14090)]
 
-            labels = tf.keras.Input(shape=(dataset_parameters['num_classes'],), dtype='int32')
+            labels = tf.keras.Input(shape=(dataset_parameters['num_classes'],),
+                                    dtype='int32')
             inputs = tf.keras.Input(shape=(224, 224, 3), dtype='float32')
             x = model_template(inputs)
-            output = tf.keras.layers.Dense(dataset_parameters['num_classes'], name='output')(x)
-            cluster = ClusterLayer(num_classes=dataset_parameters['num_classes'],
-                                         class_weight=cl_weights,
-                                         name='cluster')([x, labels])
-            model_template = tf.keras.Model(inputs=[inputs, labels], outputs=[output, cluster])
+            output = tf.keras.layers.Dense(dataset_parameters['num_classes'],
+                                           name='output')(x)
+            cluster = ClusterLayer(
+                num_classes=dataset_parameters['num_classes'],
+                class_weight=cl_weights,
+                name='cluster')([x, labels])
+            model_template = tf.keras.Model(inputs=[inputs, labels],
+                                            outputs=[output, cluster])
             print("Cluster layer added")
 
             # compile the model
@@ -119,10 +126,17 @@ def load_model(model_parameters, dataset_parameters):
                       .format(model_parameters['from_logits']))
 
             # compile the model
+            weights = None
+            if model_parameters['loss_weight']:
+                print('** loss weights **')
+                weights = [float(134414 / 24882), float(134414 / 3750),
+                           float(134414 / 3803), float(134414 / 6378),
+                           float(134414 / 134414), float(134414 / 74874),
+                           float(134414 / 25759), float(134414 / 14090)]
             model_template.compile(loss=loss,
                                    optimizer=optimizer,
-                                   metrics=['mae', 'accuracy'])
-
+                                   metrics=['mae', 'accuracy'],
+                                   loss_weights=weights)
 
     # return the model template for saving issues with multi GPU
     return model_template

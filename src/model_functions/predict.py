@@ -5,9 +5,8 @@ from argparse import ArgumentParser
 import tensorflow as tf
 import numpy as np
 
-sys.path.insert(0, '../utils')
-from model_utility import *
-from generators import *
+from src.utils.model_utility import *
+from src.utils.generators import *
 
 
 def train_model(model_configuration: str,
@@ -15,18 +14,18 @@ def train_model(model_configuration: str,
                 computer_configuration: str):
     # loads name, image width/ height and l2_reg data
     # model_parameters = load_model_parameters(model)
-    with open('../configuration/model/{}.json'
+    with open('src/configuration/model/{}.json'
                       .format(model_configuration)) as json_file:
         model_parameters = json.load(json_file)
 
     # loads data, number of gpus
-    with open('../configuration/computer/{}.json'
+    with open('src/configuration/computer/{}.json'
                       .format(computer_configuration)) as json_file:
         computer_parameters = json.load(json_file)
 
     # loads n_classes, labels, class names, etc.
     # dataset_parameters = load_dataset_parameters(dataset_name, path)
-    with open('../configuration/dataset/{}.json'
+    with open('src/configuration/dataset/{}.json'
                       .format(dataset_configuration)) as json_file:
         dataset_parameters = json.load(json_file)
 
