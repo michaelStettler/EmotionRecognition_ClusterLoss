@@ -47,11 +47,11 @@ output = tf.keras.layers.Dense(10, name='output')(x)
 
 
 model = tf.keras.Model(inputs=[input, label], outputs=[output, cluster])
-model.compile(optimizer=tf.keras.optimizers.SGD(lr=0.0001, momentum=0.9),
+model.compile(optimizer=tf.keras.optimizers.SGD(lr=0.0005, momentum=0.9),
               loss={'output': WeightedSoftmaxLoss2(10, class_weights, from_logits=True),
                     'ClusterLayer': WeightedClusterLoss(class_weights)},
               metrics={'output': [tf.keras.metrics.CategoricalAccuracy()]},
-              loss_weights=[1, 0.5])
+              loss_weights=[1, .5])
 print(model.summary())
 
 # fit
@@ -64,7 +64,7 @@ print("shape y_train", np.shape(y_train))
 print("shape train_cl", np.shape(train_cl))
 
 # model.train_on_batch([x_train[:32], y_train[:32]], y=[[y_train[:32], train_cl[:32]]])
-hist = model.fit([x_train, y_train], y=[y_train, train_cl], epochs=3, batch_size=128,
+hist = model.fit([x_train, y_train], y=[y_train, train_cl], epochs=180, batch_size=256,
           validation_data=([x_test, y_test], [y_test, test_cl]))
 
 
@@ -80,7 +80,7 @@ print(test_labels[:10])
 # plot
 import matplotlib.pyplot as plt
 
-f = plt.figure(figsize=(16,9))
+plt.figure(figsize=(16, 9))
 c = ['#ff0000', '#ffff00', '#00ff00', '#00ffff', '#0000ff',
      '#ff00ff', '#990000', '#999900', '#009900', '#009999']
 
@@ -88,6 +88,7 @@ for i in range(10):
     plt.plot(preds[test_labels == i, 0].flatten(), preds[test_labels == i, 1].flatten(), '.', c=c[i])
 plt.legend(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'])
 plt.grid()
+plt.savefig('cluster.png')
 
 # plot history
 # summarize history for accuracy
@@ -98,6 +99,7 @@ plt.title('model accuracy')
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left')
+plt.savefig('accuracy.png')
 # summarize history for loss
 plt.figure()
 plt.plot(hist.history['loss'])
@@ -108,6 +110,5 @@ plt.title('model loss')
 plt.ylabel('loss')
 plt.xlabel('epoch')
 plt.legend(['train', 'train_output_loss', 'train_clust_loss', 'test'], loc='upper left')
+plt.savefig('loss.png')
 
-
-plt.show()

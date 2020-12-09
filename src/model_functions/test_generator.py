@@ -10,6 +10,7 @@ import tensorflow_datasets as tfds
 num_data = 512
 batch_size = 32
 num_epochs = 5
+num_iter = num_data/batch_size
 
 # create image folder
 img_path = 'train_img'
@@ -29,7 +30,7 @@ for image, label in tfds.as_numpy(ds):  # example is (image, label)
     cv2.imwrite(img_name, image)
 
     idx += 1
-
+print(df.head())
 
 # define a simple Center layer
 class CenterLayer(Layer):
@@ -82,16 +83,18 @@ model.compile(loss={'output': tf.keras.losses.CategoricalCrossentropy(from_logit
 print(model.summary())
 
 # create generator
-generator = tf.keras.preprocessing.image.ImageDataGenerator(vertical_flip=True)
+generator = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1./255, horizontal_flip=True)
 train_gen = generator.flow_from_dataframe(df, x_col='img_path', y_col='label',
                                           class_mode='categorical',
                                           target_size=(32, 32),
                                           batch_size=batch_size)
 
 
-def my_generator(generator):
-    while True:
-        batch = generator.next()
+# define custom generator
+def my_generator(stop):
+    i = 0
+    while i < stop:
+        batch = train_gen.next()
         img = batch[0]
         labels = batch[1]
         labels_size = np.shape(labels)
@@ -100,12 +103,29 @@ def my_generator(generator):
         y = [labels, cluster]
 
         yield x, y
+        i += 1
 
 
-train_generator = my_generator(train_gen)
+# test
+j = 0
+for x, y in my_generator(num_iter):
+    print("j", j)
+    print(x)
+    print(np.shape(x[0]), np.shape(x[1]))
+    print(np.shape(y[0]), np.shape(y[1]))
 
+    j += 1
+    if j > 5:
+        break
+
+# transform generator to tf.Data
+ds = tf.data.Dataset.from_generator(my_generator,
+                                    args=[num_iter],
+                                    output_types=((tf.float32, tf.float32), (tf.float32, tf.float32)))
+                                    # output_shapes=(((None, 32, 32, 3), (None, 10)), ((None, 10), (None, 10))))
+print("tf.data has been created")
 # fit model
-model.fit(train_generator,
+model.fit(ds,
           epochs=num_epochs,
           steps_per_epoch=num_data/batch_size,
           workers=4,
