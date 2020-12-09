@@ -121,7 +121,7 @@ for x, y in my_generator(num_iter):
 # transform generator to tf.Data
 ds = tf.data.Dataset.from_generator(my_generator,
                                     args=[num_iter],
-                                    output_types=((tf.float32, tf.float32), (tf.float32, tf.float32)))
+                                    output_types=([tf.float32, tf.float32], [tf.float32, tf.float32]))
                                     # output_shapes=(((None, 32, 32, 3), (None, 10)), ((None, 10), (None, 10))))
 print("tf.data has been created")
 # fit model
