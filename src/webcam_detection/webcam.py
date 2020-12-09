@@ -69,7 +69,7 @@ def webcam_detection(model_path: str):
         faces = classifier.detectMultiScale(
             frame,
             scaleFactor=1.1,
-            minNeighbors=4,
+            minNeighbors=5,
             minSize=(100, 100),
             flags=cv2.CASCADE_SCALE_IMAGE)
 
