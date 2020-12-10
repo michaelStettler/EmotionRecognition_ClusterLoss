@@ -54,8 +54,9 @@ def load_model(model_parameters, dataset_parameters):
             )
 
         elif model_parameters['model_name'] == 'resnet50v2_ClusterLoss':
+            from src.models.resnet_prelu import ResNet50V2_prelu
             print('** loaded resnet50v2 ClusterLoss**')
-            model_template = tf.keras.applications.ResNet50V2(
+            model_template = ResNet50V2_prelu(
                 include_top=model_parameters['include_top'],
                 weights=model_parameters['weights'],
                 input_shape=(model_parameters['image_width'],
