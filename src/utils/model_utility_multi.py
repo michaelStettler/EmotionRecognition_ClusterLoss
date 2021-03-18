@@ -94,15 +94,24 @@ def load_model(model_parameters, dataset_parameters):
         if model_parameters['use_cluster_loss']:
             # -------------------------------------------------------------------------------------------------------------
             # add cluster
-            cl_weights = [float(134414 / 24882), float(134414 / 3750),
-                          float(134414 / 3803), float(134414 / 6378),
-                          float(134414 / 134414), float(134414 / 74874),
-                          float(134414 / 25759), float(134414 / 14090)]
+            # cl_weights = [float(134414 / 24882), float(134414 / 3750),
+            #               float(134414 / 3803), float(134414 / 6378),
+            #               float(134414 / 134414), float(134414 / 74874),
+            #               float(134414 / 25759), float(134414 / 14090)]
+            # # cl_weights = [float(3750 / 24882), float(3750 / 3750),  # as paper
+            # #               float(3750 / 3803), float(3750 / 6378),
+            # #               float(3750 / 134414), float(3750 / 74874),
+            # #               float(3750 / 25759), float(3750 / 14090)]
+            # "class_weights": [5.402, 35.844, 35.344, 21.074, 1.0, 1.79, 5.218, 9.539],
+            cl_weights = dataset_parameters['class_weights']
+            print("class weights", cl_weights)
 
             labels = tf.keras.Input(shape=(dataset_parameters['num_classes'],),
                                     dtype='int32')
             inputs = tf.keras.Input(shape=(224, 224, 3), dtype='float32')
             x = model_template(inputs)
+            x = tf.keras.layers.Dense(512, name='fc2')(x)
+            x = tf.keras.layers.PReLU()(x)
             output = tf.keras.layers.Dense(dataset_parameters['num_classes'],
                                            name='output')(x)
             cluster = ClusterLayer(
@@ -116,7 +125,7 @@ def load_model(model_parameters, dataset_parameters):
             # compile the model
             # model_template.compile(loss={'output': tf.keras.losses.CategoricalCrossentropy(from_logits=True),
             model_template.compile(loss={'output': WeightedSoftmaxLoss2(10, cl_weights, from_logits=True),
-                                'cluster': WeightedClusterLoss(cl_weights, _lambda=1.0)},
+                                'cluster': WeightedClusterLoss(cl_weights, _lambda=0.01)},
                           optimizer=optimizer,
                           metrics={'output': ['mae', tf.keras.metrics.CategoricalAccuracy()]})
         else:
@@ -127,17 +136,9 @@ def load_model(model_parameters, dataset_parameters):
                       .format(model_parameters['from_logits']))
 
             # compile the model
-            weights = None
-            if model_parameters['loss_weight']:
-                print('** loss weights **')
-                weights = [float(134414 / 24882), float(134414 / 3750),
-                           float(134414 / 3803), float(134414 / 6378),
-                           float(134414 / 134414), float(134414 / 74874),
-                           float(134414 / 25759), float(134414 / 14090)]
             model_template.compile(loss=loss,
                                    optimizer=optimizer,
-                                   metrics=['mae', 'accuracy'],
-                                   loss_weights=weights)
+                                   metrics=['mae', 'accuracy'])
 
     # return the model template for saving issues with multi GPU
     return model_template

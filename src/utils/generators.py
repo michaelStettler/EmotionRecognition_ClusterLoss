@@ -56,6 +56,8 @@ def get_generator(dataset_parameters,
                                               dataset_parameters['training_directory'])
 
             training_dataframe = pd.read_csv(training_csv_file)
+            training_dataframe[dataset_parameters['class_label']] = training_dataframe[
+                dataset_parameters['class_label']].astype(str)
 
             training_generator = training_data_generator.flow_from_dataframe(
                 dataframe=training_dataframe,
@@ -75,6 +77,8 @@ def get_generator(dataset_parameters,
                                             dataset_parameters['validation_directory'])
 
         validation_dataframe = pd.read_csv(validation_csv_file)
+        validation_dataframe[dataset_parameters['class_label']] = validation_dataframe[
+            dataset_parameters['class_label']].astype(str)
 
         validation_generator = validation_data_generator.flow_from_dataframe(
             dataframe=validation_dataframe,
