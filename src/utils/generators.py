@@ -93,8 +93,8 @@ def get_generator(dataset_parameters,
         )
 
     elif 'directory' in dataset_parameters['labels_type']:
-        training_directory = dataset_parameters['training_directory']
-        validation_directory = dataset_parameters['validation_directory']
+        training_directory = os.path.join(computer_parameters['dataset_path'], dataset_parameters['training_directory'])
+        validation_directory = os.path.join(computer_parameters['dataset_path'], dataset_parameters['validation_directory'])
 
         if not os.path.isdir(training_directory):
             raise ValueError('Training directory does not exist',
@@ -110,7 +110,7 @@ def get_generator(dataset_parameters,
             label_mode='categorical',
             class_names=dataset_parameters['class_names'],
             batch_size=model_parameters['batch_size'],
-            image_size=(model_parameters['img_height'],
+            image_size=(model_parameters['image_height'],
                         model_parameters['image_width']),
             shuffle=True,
         )

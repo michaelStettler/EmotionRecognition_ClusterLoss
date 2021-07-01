@@ -4,12 +4,13 @@ from sklearn.metrics import classification_report
 from argparse import ArgumentParser
 import tensorflow as tf
 import numpy as np
+import cv2
 
 from src.utils.model_utility import *
 from src.utils.generators import *
 
 
-def train_model(model_configuration: str,
+def predict_model(model_configuration: str,
                 dataset_configuration: str,
                 computer_configuration: str):
     # loads name, image width/ height and l2_reg data
@@ -29,34 +30,41 @@ def train_model(model_configuration: str,
                       .format(dataset_configuration)) as json_file:
         dataset_parameters = json.load(json_file)
 
-    model = tf.keras.models.load_model(model_parameters['model_path'])
+    model = tf.keras.models.load_model(model_parameters['weights'])
 
-    # create the training and validation data
-    empty_training_data, validation_data = get_generator(dataset_parameters,
-                                                         model_parameters,
-                                                         computer_parameters,
-                                                         True)
+    # get basic shape images
+    data_path = "/app/Dataset/basic_shape_test"
+    file_list = sorted(os.listdir(data_path))
+    print("file_list", file_list)
 
-    predictions = model.predict(validation_data,
-                                workers=12,
-                                verbose=1)
+    data = np.zeros((len(file_list), 224, 224, 3))
+    for f, file in enumerate(file_list):
+        im = cv2.imread(os.path.join(data_path, file))
+        im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
+        im = cv2.resize(im, (224, 224))
 
-    print("shape prediction", np.shape(predictions))
-    print('** classes indices: **', validation_data.class_indices)
-    if 'AffectNet' in dataset_parameters['dataset_name']:
-        print(classification_report(validation_data.classes,
-                                    predictions.argmax(axis=1),
-                                    target_names=dataset_parameters[
-                                        'class_names']))
-    else:
-        print(classification_report(validation_data.classes,
-                                    predictions.argmax(axis=1)))
+        data[f] = im
+    print("shape data", np.shape(data))
+    print("min max data", np.amin(data), np.amax(data))
+    data = resnet_v2.preprocess_input(data)
+    print("min max data", np.amin(data), np.amax(data))
 
-    np.save('../metrics/{}/'.format(dataset_parameters['dataset_name'])
-            + 'predictions', predictions)
+    # predict images
+    predictions = model.predict(data, workers=1, verbose=1)
+
+    print("predictions", np.shape(predictions))
+    print(np.argmax(predictions, axis=1))
+    for i in range(len(file_list)):
+        arg = np.argmax(predictions[i])
+        print("prediction", file_list[i], dataset_parameters['class_names'][arg])
 
 
 if __name__ == '__main__':
+    """
+    Run the model to predict images set in a folder
+    
+    run: python -m src.model_functions.predict_model_basic_shape -m resnet50v2 -d affectnet -c blue
+    """
     parser = ArgumentParser()
     parser.add_argument("-m", "--model",
                         help="select your model")
@@ -70,6 +78,6 @@ if __name__ == '__main__':
     dataset_configuration_name = args.dataset
     computer_configuration_name = args.computer
 
-    train_model(model_configuration_name,
+    predict_model(model_configuration_name,
                 dataset_configuration_name,
                 computer_configuration_name)
