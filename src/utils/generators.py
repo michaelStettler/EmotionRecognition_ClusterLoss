@@ -5,9 +5,7 @@ import pandas as pd
 import numpy as np
 from tensorflow.keras.preprocessing.image import *
 from sklearn.datasets import make_blobs
-from tensorflow.python.keras.preprocessing.image_dataset import \
-    image_dataset_from_directory
-
+# from tensorflow.python.keras.preprocessing.image_dataset import image_dataset_from_directory
 sys.path.insert(0, '../')
 from src.utils.data_augmentation import *
 
@@ -103,7 +101,8 @@ def get_generator(dataset_parameters,
             raise ValueError('Validation directory does not exist',
                              validation_directory)
 
-        training_generator = image_dataset_from_directory(
+        # training_generator = image_dataset_from_directory(
+        training_generator = tf.keras.preprocessing.image_dataset_from_directory(
             training_directory,
             validation_split=0.2,
             subset="training",
