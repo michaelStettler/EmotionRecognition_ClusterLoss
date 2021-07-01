@@ -33,7 +33,7 @@ def predict_model(model_configuration: str,
     model = tf.keras.models.load_model(model_parameters['weights'])
 
     # get basic shape images
-    data_path = "/app/Dataset/basic_shape_test"
+    data_path = computer_parameters["dataset_path"] + "basic_shape_test"
     file_list = sorted(os.listdir(data_path))
     print("file_list", file_list)
 
