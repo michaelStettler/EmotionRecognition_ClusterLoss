@@ -64,6 +64,7 @@ if __name__ == '__main__':
     Run the model to predict images set in a folder
     
     run: python -m src.model_functions.predict_model_basic_shape -m resnet50v2 -d affectnet -c blue
+    run: python -m src.model_functions.predict_model_basic_shape -m resnet50v2 -d basic_shape -c michael_win
     """
     parser = ArgumentParser()
     parser.add_argument("-m", "--model",
