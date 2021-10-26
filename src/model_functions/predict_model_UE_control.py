@@ -33,49 +33,36 @@ def predict_model(model_configuration: str,
     model = tf.keras.models.load_model(model_parameters['weights'])
 
     # get basic shape images
-    # data_path = computer_parameters["dataset_path"] + "basic_shape_test"
-    data_path = computer_parameters["dataset_path"] + "basic_shape"
+    data_path = computer_parameters["dataset_path"] + "UE4_control"
     file_list = sorted(os.listdir(data_path))
     print("file_list", file_list)
 
     data = np.zeros((len(file_list), 224, 224, 3))
     for f, file in enumerate(file_list):
         im = cv2.imread(os.path.join(data_path, file))
+        print("shape im", np.shape(im))
+        im = im[:, 80:560, :]  # crop image
+        print("shape im", np.shape(im))
         im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
         im = cv2.resize(im, (224, 224))
 
         data[f] = im
     print("shape data", np.shape(data))
     print("min max data", np.amin(data), np.amax(data))
+    print("first pixel", data[0, 0, 0, :])
     data = resnet_v2.preprocess_input(data)
     print("min max data", np.amin(data), np.amax(data))
+    print("prerpocess", data[0, 0, 0, :])
 
     # predict images
     predictions = model.predict(data, workers=1, verbose=1)
 
     print("predictions", np.shape(predictions))
     print(np.argmax(predictions, axis=1))
-    n_correct = 0
     for i in range(len(file_list)):
         arg = np.argmax(predictions[i])
         print("prediction", file_list[i], dataset_parameters['class_names'][arg])
-
-        if 'Sad' in file_list[i] and  dataset_parameters['class_names'][arg] == 'Sad':
-            n_correct += 1
-        elif 'Angry' in file_list[i] and  dataset_parameters['class_names'][arg] == 'Anger':
-            n_correct += 1
-        elif 'Disgust' in file_list[i] and dataset_parameters['class_names'][arg] == 'Disgust':
-            n_correct += 1
-        elif 'Fear' in file_list[i] and dataset_parameters['class_names'][arg] == 'Fear':
-            n_correct += 1
-        elif 'Happy' in file_list[i] and dataset_parameters['class_names'][arg] == 'Happy':
-            n_correct += 1
-        elif 'Neutral' in file_list[i] and dataset_parameters['class_names'][arg] == 'Neutral':
-            n_correct += 1
-        elif 'Surprise' in file_list[i] and dataset_parameters['class_names'][arg] == 'Surprise':
-            n_correct += 1
-
-    print('Total accuracy:', n_correct/len(file_list))
+        print(predictions[i])
 
 
 if __name__ == '__main__':
@@ -83,7 +70,7 @@ if __name__ == '__main__':
     Run the model to predict images set in a folder
     
     run: python -m src.model_functions.predict_model_basic_shape -m resnet50v2 -d affectnet -c blue
-    run: python -m src.model_functions.predict_model_basic_shape -m resnet50v2 -d basic_shape -c michael_win
+    run: python -m src.model_functions.predict_model_UE_control -m resnet50v2 -d UE4_control -c michael_win
     """
     parser = ArgumentParser()
     parser.add_argument("-m", "--model",
