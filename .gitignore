@@ -152,3 +152,4 @@ src/test
 src/configuration/computer
 src/configuration/model
 src/configuration/dataset
+train_img/
