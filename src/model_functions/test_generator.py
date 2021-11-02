@@ -104,6 +104,7 @@ def my_generator(stop):
 
         yield x, y
         i += 1
+        print("i", i)
 
 
 # test
