@@ -76,20 +76,30 @@ def train_model(model_configuration: str,
     callbacks_list.append(history)
     callbacks_list.append(CustomPrintCallback())
 
-    # print('** classes indices: **', training_data.class_indices)
-    class_weights = None
-    if model_parameters['class_weights']:
-        class_weights = {
-            0: float(134414 / 24882),
-            1: float(134414 / 3750),
-            2: float(134414 / 3803),
-            3: float(134414 / 6378),
-            4: float(134414 / 134414),
-            5: float(134414 / 74874),
-            6: float(134414 / 25759),
-            7: float(134414 / 14090),
-        }
-        print('** loaded class weights **', class_weights)
+    # # print('** classes indices: **', training_data.class_indices)
+    # class_weights = None
+    # if model_parameters['class_weights']:
+    #     class_weights = {
+    #         0: float(134414 / 24882),
+    #         1: float(134414 / 3750),
+    #         2: float(134414 / 3803),
+    #         3: float(134414 / 6378),
+    #         4: float(134414 / 134414),
+    #         5: float(134414 / 74874),
+    #         6: float(134414 / 25759),
+    #         7: float(134414 / 14090),
+    #     }
+    #     # class_weights = {  # as paper
+    #     #     0: float(3750 / 24882),
+    #     #     1: float(3750 / 3750),
+    #     #     2: float(3750 / 3803),
+    #     #     3: float(3750 / 6378),
+    #     #     4: float(3750 / 134414),
+    #     #     5: float(3750 / 74874),
+    #     #     6: float(3750 / 25759),
+    #     #     7: float(3750 / 14090),
+    #     # }
+    #     print('** loaded class weights **', class_weights)
 
     print(model.summary())
     # test generator
@@ -99,7 +109,7 @@ def train_model(model_configuration: str,
               validation_data=validation_data,
               validation_steps=128,
               callbacks=callbacks_list,
-              steps_per_epoch=287650/model_parameters['batch_size'],
+              steps_per_epoch=dataset_parameters['num_train_images']/model_parameters['batch_size'],
               # steps_per_epoch=5000/model_parameters['batch_size'],
               # class_weight=class_weights,
               workers=1,
@@ -113,7 +123,7 @@ def train_model(model_configuration: str,
     evaluation = model.evaluate(validation_data,
                                 workers=1,
                                 use_multiprocessing=False,
-                                steps=4000 / model_parameters['batch_size'],
+                                steps=dataset_parameters['num_val_images'] / model_parameters['batch_size'],
                                 verbose=1)
 
     print("evaluation", evaluation)

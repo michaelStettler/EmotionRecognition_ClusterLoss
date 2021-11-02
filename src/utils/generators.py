@@ -5,9 +5,7 @@ import pandas as pd
 import numpy as np
 from tensorflow.keras.preprocessing.image import *
 from sklearn.datasets import make_blobs
-from tensorflow.python.keras.preprocessing.image_dataset import \
-    image_dataset_from_directory
-
+# from tensorflow.python.keras.preprocessing.image_dataset import image_dataset_from_directory
 sys.path.insert(0, '../')
 from src.utils.data_augmentation import *
 
@@ -56,6 +54,8 @@ def get_generator(dataset_parameters,
                                               dataset_parameters['training_directory'])
 
             training_dataframe = pd.read_csv(training_csv_file)
+            training_dataframe[dataset_parameters['class_label']] = training_dataframe[
+                dataset_parameters['class_label']].astype(str)
 
             training_generator = training_data_generator.flow_from_dataframe(
                 dataframe=training_dataframe,
@@ -75,6 +75,8 @@ def get_generator(dataset_parameters,
                                             dataset_parameters['validation_directory'])
 
         validation_dataframe = pd.read_csv(validation_csv_file)
+        validation_dataframe[dataset_parameters['class_label']] = validation_dataframe[
+            dataset_parameters['class_label']].astype(str)
 
         validation_generator = validation_data_generator.flow_from_dataframe(
             dataframe=validation_dataframe,
@@ -89,8 +91,8 @@ def get_generator(dataset_parameters,
         )
 
     elif 'directory' in dataset_parameters['labels_type']:
-        training_directory = dataset_parameters['training_directory']
-        validation_directory = dataset_parameters['validation_directory']
+        training_directory = os.path.join(computer_parameters['dataset_path'], dataset_parameters['training_directory'])
+        validation_directory = os.path.join(computer_parameters['dataset_path'], dataset_parameters['validation_directory'])
 
         if not os.path.isdir(training_directory):
             raise ValueError('Training directory does not exist',
@@ -99,14 +101,15 @@ def get_generator(dataset_parameters,
             raise ValueError('Validation directory does not exist',
                              validation_directory)
 
-        training_generator = image_dataset_from_directory(
+        # training_generator = image_dataset_from_directory(
+        training_generator = tf.keras.preprocessing.image_dataset_from_directory(
             training_directory,
             validation_split=0.2,
             subset="training",
             label_mode='categorical',
             class_names=dataset_parameters['class_names'],
             batch_size=model_parameters['batch_size'],
-            image_size=(model_parameters['img_height'],
+            image_size=(model_parameters['image_height'],
                         model_parameters['image_width']),
             shuffle=True,
         )

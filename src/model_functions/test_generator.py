@@ -94,7 +94,7 @@ train_gen = generator.flow_from_dataframe(df, x_col='img_path', y_col='label',
 def my_generator(stop):
     i = 0
     while i < stop:
-        batch = train_gen.next()
+        batch = next(train_gen)
         img = batch[0]
         labels = batch[1]
         labels_size = np.shape(labels)
@@ -102,9 +102,9 @@ def my_generator(stop):
         x = [img, labels]
         y = [labels, cluster]
 
-        yield x, y
         i += 1
         print("i", i)
+        yield x, y
 
 
 # test

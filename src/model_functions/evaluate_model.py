@@ -5,11 +5,12 @@ from argparse import ArgumentParser
 import tensorflow as tf
 import numpy as np
 
-from src.utils.model_utility import *
-from src.utils.generators import *
+sys.path.insert(0, '../utils')
+from src.utils.model_utility_multi import load_model
+from src.utils.generators import get_generator
 
 
-def train_model(model_configuration: str,
+def evaluate_model(model_configuration: str,
                 dataset_configuration: str,
                 computer_configuration: str):
     # loads name, image width/ height and l2_reg data
@@ -29,7 +30,26 @@ def train_model(model_configuration: str,
                       .format(dataset_configuration)) as json_file:
         dataset_parameters = json.load(json_file)
 
-    model = tf.keras.models.load_model(model_parameters['model_path'])
+    # model template serves to save the model even with multi GPU training
+    # model, model_template = load_model(model_parameters,
+    #                                    dataset_parameters)
+
+    model = tf.keras.models.load_model(model_parameters['weights'])
+
+    # load optimizer with custom learning rate
+    if model_parameters['optimizer'] == 'sgd':
+        optimizer = tf.keras.optimizers. \
+            SGD(lr=model_parameters['learning_rate'],
+                momentum=0.9,
+                nesterov=False)
+    elif model_parameters['optimizer'] == 'adam':
+        optimizer = tf.keras.optimizers.Adam(
+            lr=model_parameters['learning_rate'])
+
+    # compile the model
+    model.compile(loss=model_parameters['loss'],
+                  optimizer=optimizer,
+                  metrics=['mae', 'accuracy'])
 
     # create the training and validation data
     empty_training_data, validation_data = get_generator(dataset_parameters,
@@ -37,26 +57,19 @@ def train_model(model_configuration: str,
                                                          computer_parameters,
                                                          True)
 
-    predictions = model.predict(validation_data,
-                                workers=12,
-                                verbose=1)
-
-    print("shape prediction", np.shape(predictions))
-    print('** classes indices: **', validation_data.class_indices)
-    if 'AffectNet' in dataset_parameters['dataset_name']:
-        print(classification_report(validation_data.classes,
-                                    predictions.argmax(axis=1),
-                                    target_names=dataset_parameters[
-                                        'class_names']))
-    else:
-        print(classification_report(validation_data.classes,
-                                    predictions.argmax(axis=1)))
-
-    np.save('../metrics/{}/'.format(dataset_parameters['dataset_name'])
-            + 'predictions', predictions)
+    # evaluate the model
+    print("evaluate model")
+    evaluation = model.evaluate_generator(validation_data,
+                                          workers=12,
+                                          verbose=1)
+    print("evaluation", evaluation)
+    print("evaluation", model.metrics_names)
 
 
 if __name__ == '__main__':
+    """
+    run: python -m src.model_functions.evaluate_model -m resnet50v2 -d affectnet -c blue
+    """
     parser = ArgumentParser()
     parser.add_argument("-m", "--model",
                         help="select your model")
@@ -70,6 +83,6 @@ if __name__ == '__main__':
     dataset_configuration_name = args.dataset
     computer_configuration_name = args.computer
 
-    train_model(model_configuration_name,
+    evaluate_model(model_configuration_name,
                 dataset_configuration_name,
                 computer_configuration_name)
