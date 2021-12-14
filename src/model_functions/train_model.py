@@ -37,7 +37,8 @@ def train_model(model_configuration: str,
 
     # model template serves to save the model even with multi GPU training
     model = load_model(model_parameters,
-                       dataset_parameters)
+                       dataset_parameters,
+                       train=True)
     # tf.keras.utils.plot_model(model)
 
     # create the training and validation data
@@ -123,6 +124,7 @@ if __name__ == '__main__':
 
     """
     run: python -m src.model_functions.train_model -m resnet50v2 -d affectnet -c blue
+    run: python -m src.model_functions.train_model -m vgg19 -d affectnet -c michael_win
     """
 
     # runtime initialization will not allocate all memory on the device

@@ -6,7 +6,7 @@ from src.model_functions.WeightedSoftmaxCluster import WeightedSoftmaxLoss2
 from src.model_functions.WeightedSoftmaxCluster import WeightedClusterLoss
 
 
-def load_model(model_parameters, dataset_parameters):
+def load_model(model_parameters, dataset_parameters, train=False):
     # setup for multi gpu
     strategy = tf.distribute.MirroredStrategy()
     print('** Number of devices: {} **'.format(strategy.num_replicas_in_sync))
@@ -31,10 +31,15 @@ def load_model(model_parameters, dataset_parameters):
 
     with strategy.scope():
 
+        if train:
+            weights = None
+        else:
+            weights = model_parameters['weights']
+
         if model_parameters['model_name'] == 'resnet50':
             model_template = tf.keras.applications.ResNet50(
                 include_top=model_parameters['include_top'],
-                weights=model_parameters['weights'],
+                weights=weights,
                 input_shape=(model_parameters['image_width'],
                              model_parameters['image_height'],
                              3),
@@ -42,23 +47,22 @@ def load_model(model_parameters, dataset_parameters):
             )
 
         elif model_parameters['model_name'] == 'resnet50v2':
-            print('** loaded resnet50v2 **')
             model_template = tf.keras.applications.ResNet50V2(
                 include_top=model_parameters['include_top'],
-                weights=model_parameters['weights'],
+                weights=weights,
                 input_shape=(model_parameters['image_width'],
                              model_parameters['image_height'],
                              3),
                 classes=dataset_parameters['num_classes'],
                 classifier_activation=model_parameters['activation']
             )
-
+            print('** loaded resnet50v2 **')
         elif model_parameters['model_name'] == 'resnet50v2_ClusterLoss':
             from src.models.resnet_prelu import ResNet50V2_prelu
             print('** loaded resnet50v2 ClusterLoss**')
             model_template = ResNet50V2_prelu(
                 include_top=model_parameters['include_top'],
-                weights=model_parameters['weights'],
+                weights=weights,
                 input_shape=(model_parameters['image_width'],
                              model_parameters['image_height'],
                              3),
@@ -68,7 +72,7 @@ def load_model(model_parameters, dataset_parameters):
         elif model_parameters['model_name'] == 'resnet101':
             model_template = tf.keras.applications.ResNet101(
                 include_top=model_parameters['include_top'],
-                weights=model_parameters['weights'],
+                weights=weights,
                 input_shape=(model_parameters['image_width'],
                              model_parameters['image_height'],
                              3),
@@ -79,6 +83,18 @@ def load_model(model_parameters, dataset_parameters):
             model_template = CORnet_S(classes=dataset_parameters['num_classes'],
                                       from_logits=model_parameters[
                                           'from_logits'])
+
+        elif model_parameters['model_name'] == 'vgg19':
+            model_template = tf.keras.applications.VGG19(
+                include_top=model_parameters['include_top'],
+                weights=weights,
+                input_shape=(model_parameters['image_width'],
+                             model_parameters['image_height'],
+                             3),
+                classes=dataset_parameters['num_classes'],
+                classifier_activation=model_parameters['activation']
+            )
+            print('** loaded VGG19 **')
         else:
             raise ValueError("Model does not exists in load_model")
 
