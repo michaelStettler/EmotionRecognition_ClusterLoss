@@ -23,6 +23,7 @@ def resnet_generator(train: bool):
 
 
 def resnet_v2_generator(train: bool):
+    print("** ResNetv2 generator")
     if train:
         data_generator = ImageDataGenerator(
             dtype='float32',
@@ -40,6 +41,61 @@ def resnet_v2_generator(train: bool):
             horizontal_flip=False,
             fill_mode="nearest")
     return data_generator
+
+
+def resnet_v2_none_generator(train: bool):
+    print("** ResNetv2 None_generator")
+    if train:
+        data_generator = ImageDataGenerator(
+            dtype='float32',
+            preprocessing_function=resnet_v2.preprocess_input,
+            horizontal_flip=False,
+            fill_mode="nearest")
+    else:
+        data_generator = ImageDataGenerator(
+            dtype='float32',
+            preprocessing_function=resnet_v2.preprocess_input,
+            horizontal_flip=False,
+            fill_mode="nearest")
+    return data_generator
+
+
+def vgg_generator(train: bool):
+    print("** VGG generator")
+    if train:
+        data_generator = ImageDataGenerator(
+            dtype='float32',
+            preprocessing_function=vgg16.preprocess_input,
+            horizontal_flip=True,
+            fill_mode="nearest",
+            zoom_range=0.3,
+            width_shift_range=0.1,
+            height_shift_range=0.1,
+            rotation_range=30)
+    else:
+        data_generator = ImageDataGenerator(
+            dtype='float32',
+            preprocessing_function=vgg16.preprocess_input,
+            horizontal_flip=False,
+            fill_mode="nearest")
+    return data_generator
+
+def vgg_none_generator(train: bool):
+    print("** VGG None generator")
+    if train:
+        data_generator = ImageDataGenerator(
+            dtype='float32',
+            preprocessing_function=vgg16.preprocess_input,
+            horizontal_flip=False,
+            fill_mode="nearest")
+    else:
+        data_generator = ImageDataGenerator(
+            dtype='float32',
+            preprocessing_function=vgg16.preprocess_input,
+            horizontal_flip=False,
+            fill_mode="nearest")
+    return data_generator
+
 
 
 def resnet_basic_generator(train: bool):
@@ -67,6 +123,15 @@ def resnet_v2_basic_generator(train: bool):
 
 
 def get_data_generator(dataset_parameters, train=True):
+    def preprocess_fn(x):
+        mean_rgb = dataset_parameters['data_augmentation']['mean_rgb']
+        std_rgb = dataset_parameters['data_augmentation']['std_rgb']
+
+        x[:, :, 0] = (x[:, :, 0] - mean_rgb[0]) / std_rgb[0]
+        x[:, :, 1] = (x[:, :, 1] - mean_rgb[1]) / std_rgb[1]
+        x[:, :, 2] = (x[:, :, 2] - mean_rgb[2]) / std_rgb[2]
+        return x
+
     # No Data augmentation
     if not dataset_parameters['data_augmentation']:
         data_generator = ImageDataGenerator(
@@ -84,6 +149,12 @@ def get_data_generator(dataset_parameters, train=True):
 
     elif dataset_parameters['data_augmentation'] == 'resnetv2_augmentation':
         data_generator = resnet_v2_generator(train)
+    elif dataset_parameters['data_augmentation'] == 'resnetv2_none_augmentation':
+        data_generator = resnet_v2_none_generator(train)
+    elif dataset_parameters['data_augmentation'] == 'vgg_augmentation':
+        data_generator = vgg_generator(train)
+    elif dataset_parameters['data_augmentation'] == 'vgg_none_augmentation':
+        data_generator = vgg_none_generator(train)
 
     # random horizontal flips, rotation and size changes
     elif dataset_parameters['data_augmentation'] == 1:
@@ -107,14 +178,6 @@ def get_data_generator(dataset_parameters, train=True):
                 rotation_range=0.)
 
     elif dataset_parameters['data_augmentation'] == 2:
-        def preprocess_fn(x):
-            mean_rgb = dataset_parameters['data_augmentation']['mean_rgb']
-            std_rgb = dataset_parameters['data_augmentation']['std_rgb']
-
-            x[:, :, 0] = (x[:, :, 0] - mean_rgb[0]) / std_rgb[0]
-            x[:, :, 1] = (x[:, :, 1] - mean_rgb[1]) / std_rgb[1]
-            x[:, :, 2] = (x[:, :, 2] - mean_rgb[2]) / std_rgb[2]
-            return x
 
         if train:
             data_generator = ImageDataGenerator(

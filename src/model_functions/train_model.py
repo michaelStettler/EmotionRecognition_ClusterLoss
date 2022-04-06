@@ -39,6 +39,7 @@ def train_model(model_configuration: str,
     model = load_model(model_parameters,
                        dataset_parameters,
                        train=True)
+    print(model.summary())
     # tf.keras.utils.plot_model(model)
 
     # create the training and validation data
@@ -62,7 +63,7 @@ def train_model(model_configuration: str,
         print('** early_stopping enabled **')
         early_stopping = tf.keras.callbacks.EarlyStopping(
             monitor=model_parameters['early_stopping_monitor'],
-            patience=3,
+            patience=5,
             restore_best_weights=True)
         callbacks_list.append(early_stopping)
 
@@ -72,21 +73,34 @@ def train_model(model_configuration: str,
     print('** classes indices: **', training_data.class_indices)
     class_weights = None
     if model_parameters['class_weights']:
-        class_weights = {
-            0: float(134414 / 24882),
-            1: float(134414 / 3750),
-            2: float(134414 / 3803),
-            3: float(134414 / 6378),
-            4: float(134414 / 134414),
-            5: float(134414 / 74874),
-            6: float(134414 / 25759),
-            7: float(134414 / 14090),
-        }
-        print('** loaded class weights **', class_weights)
+        print("dataset_parameters['dataset_name']", dataset_parameters['dataset_name'])
+        if 'AffectNet' in dataset_parameters['dataset_name']:
+            class_weights = {
+                0: float(134414 / 24882),
+                1: float(134414 / 3750),
+                2: float(134414 / 3803),
+                3: float(134414 / 6378),
+                4: float(134414 / 134414),
+                5: float(134414 / 74874),
+                6: float(134414 / 25759),
+                7: float(134414 / 14090),
+            }
+            print('** loaded class weights **', class_weights)
+        else:
+            class_weights = {
+                0: float(21 / 1),
+                1: float(21 / 1),
+                2: float(21 / 1),
+                3: float(21 / 1),
+                4: float(21 / 15),
+                5: float(21 / 1),
+                6: float(21 / 1)
+            }
+            print('** loaded class weights **', class_weights)
 
     model.fit(training_data,
               epochs=model_parameters['number_epochs'],
-              validation_data=validation_data,
+              # validation_data=validation_data,
               validation_steps=128,
               callbacks=callbacks_list,
               class_weight=class_weights,
@@ -100,10 +114,10 @@ def train_model(model_configuration: str,
 
     print("evaluation", evaluation)
 
-    weight_path = '../weights/{}'.format(dataset_parameters['dataset_name'])
+    weight_path = 'src/weights/{}'.format(dataset_parameters['dataset_name'])
     if not os.path.exists(weight_path):
         os.mkdir(weight_path)
-    metric_path = '../metrics/{}'.format(dataset_parameters['dataset_name'])
+    metric_path = 'src/metrics/{}'.format(dataset_parameters['dataset_name'])
     if not os.path.exists(metric_path):
         os.mkdir(metric_path)
 
@@ -123,8 +137,9 @@ def train_model(model_configuration: str,
 if __name__ == '__main__':
 
     """
-    run: python -m src.model_functions.train_model -m resnet50v2 -d affectnet -c blue
+    run: python -m src.model_functions.train_model -m resnet50v2 -d affectnet_resnetv2 -c blue
     run: python -m src.model_functions.train_model -m vgg19 -d affectnet -c michael_win
+    run: python -m src.model_functions.train_model -m vgg19 -d affectnet -c blue
     """
 
     # runtime initialization will not allocate all memory on the device

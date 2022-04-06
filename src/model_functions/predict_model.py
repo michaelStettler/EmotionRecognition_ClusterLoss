@@ -52,8 +52,8 @@ def predict_model(model_configuration: str,
         print(classification_report(validation_data.classes,
                                     predictions.argmax(axis=1)))
 
-    np.save('../metrics/{}/'.format(dataset_parameters['dataset_name'])
-            + 'predictions', predictions)
+    #np.save('../metrics/{}/'.format(dataset_parameters['dataset_name'])
+    #        + 'predictions', predictions)
 
 
 if __name__ == '__main__':

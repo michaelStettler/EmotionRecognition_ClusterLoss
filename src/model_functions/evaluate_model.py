@@ -68,7 +68,10 @@ def evaluate_model(model_configuration: str,
 
 if __name__ == '__main__':
     """
-    run: python -m src.model_functions.evaluate_model -m resnet50v2 -d affectnet -c blue
+    run: python -m src.model_functions.evaluate_model -m resnet50v2 -d affectnet_resnetv2 -c blue
+    run: python -m src.model_functions.evaluate_model -m resnet50v2_bfs -d affectnet_resnetv2 -c blue
+    run: python -m src.model_functions.evaluate_model -m CORnet_S_m0003 -d affectnet_resnetv2 -c blue
+    run: python -m src.model_functions.evaluate_model -m CORnet_S_m0003_bfs -d affectnet_resnetv2 -c blue
     """
     parser = ArgumentParser()
     parser.add_argument("-m", "--model",

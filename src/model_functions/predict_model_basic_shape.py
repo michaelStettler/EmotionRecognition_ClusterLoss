@@ -34,7 +34,8 @@ def predict_model(model_configuration: str,
 
     # get basic shape images
     # data_path = computer_parameters["dataset_path"] + "basic_shape_test"
-    data_path = computer_parameters["dataset_path"] + "basic_shape"
+    # data_path = "/app/Dataset/basic_shape"  # test on full BFS data
+    data_path = "/app/Dataset/basic_shape_validation"
     file_list = sorted(os.listdir(data_path))
     print("file_list", file_list)
 
@@ -47,7 +48,12 @@ def predict_model(model_configuration: str,
         data[f] = im
     print("shape data", np.shape(data))
     print("min max data", np.amin(data), np.amax(data))
-    data = resnet_v2.preprocess_input(data)
+    if 'vgg' in model_parameters['model_name']:
+        print("VGG pre_process")
+        data = vgg16.preprocess_input(data)
+    else:
+        print("ResNet pre_process")
+        data = resnet_v2.preprocess_input(data)
     print("min max data", np.amin(data), np.amax(data))
 
     # predict images
@@ -56,26 +62,53 @@ def predict_model(model_configuration: str,
     print("predictions", np.shape(predictions))
     print(np.argmax(predictions, axis=1))
     n_correct = 0
+    hum_correct = 0
+    monk_correct = 0
+    mery_correct = 0
+    num_human = 0
+    num_monk = 0
+    num_mery = 0
     for i in range(len(file_list)):
         arg = np.argmax(predictions[i])
         print("prediction", file_list[i], dataset_parameters['class_names'][arg])
-
-        if 'Sad' in file_list[i] and  dataset_parameters['class_names'][arg] == 'Sad':
-            n_correct += 1
-        elif 'Angry' in file_list[i] and  dataset_parameters['class_names'][arg] == 'Anger':
-            n_correct += 1
+        is_correct = False
+        if 'Sad' in file_list[i] and dataset_parameters['class_names'][arg] == 'Sad':
+            is_correct = True
+        elif 'Angry' in file_list[i] and dataset_parameters['class_names'][arg] == 'Anger':
+            is_correct = True
         elif 'Disgust' in file_list[i] and dataset_parameters['class_names'][arg] == 'Disgust':
-            n_correct += 1
+            is_correct = True
         elif 'Fear' in file_list[i] and dataset_parameters['class_names'][arg] == 'Fear':
-            n_correct += 1
+            is_correct = True
         elif 'Happy' in file_list[i] and dataset_parameters['class_names'][arg] == 'Happy':
-            n_correct += 1
+            is_correct = True
         elif 'Neutral' in file_list[i] and dataset_parameters['class_names'][arg] == 'Neutral':
-            n_correct += 1
+            is_correct = True
         elif 'Surprise' in file_list[i] and dataset_parameters['class_names'][arg] == 'Surprise':
+            is_correct = True
+
+        if is_correct:
             n_correct += 1
 
-    print('Total accuracy:', n_correct/len(file_list))
+            if 'louise' in file_list[i]:
+                hum_correct += 1
+            elif 'Mery' in file_list[i]:
+                mery_correct += 1
+            elif 'Monkey' in file_list[i]:
+                monk_correct += 1
+
+        if 'louise' in file_list[i]:
+            num_human += 1
+        elif 'Mery' in file_list[i]:
+            num_monk += 1
+        elif 'Monkey' in file_list[i]:
+            num_mery += 1
+
+    print("len fil list", len(file_list), num_human, num_monk, num_mery)
+    print('Total accuracy:', n_correct/len(file_list), n_correct)
+    print('Total human accuracy:', hum_correct/num_human, hum_correct)
+    print('Total monkey accuracy:', monk_correct/num_monk, monk_correct)
+    print('Total mery accuracy:', mery_correct/num_mery, mery_correct)
 
 
 if __name__ == '__main__':
@@ -83,7 +116,15 @@ if __name__ == '__main__':
     Run the model to predict images set in a folder
     
     run: python -m src.model_functions.predict_model_basic_shape -m resnet50v2 -d affectnet -c blue
-    run: python -m src.model_functions.predict_model_basic_shape -m resnet50v2 -d basic_shape -c michael_win
+    run: python -m src.model_functions.predict_model_basic_shape -m resnet50v2 -d basic_shape_resnet -c blue
+    
+    run: python -m src.model_functions.predict_model_basic_shape -m vgg19_m0006 -d affectnet_vgg_bfs -c blue
+    run: python -m src.model_functions.predict_model_basic_shape -m vgg19_m0006_bfs -d affectnet_vgg_bfs -c blue
+    run: python -m src.model_functions.predict_model_basic_shape -m resnet50v2 -d affectnet_resnetv2_bfs -c blue
+    run: python -m src.model_functions.predict_model_basic_shape -m resnet50v2_bfs -d affectnet_resnetv2_bfs -c blue
+    run: python -m src.model_functions.predict_model_basic_shape -m CORnet_S_m0003 -d affectnet_resnetv2_bfs -c blue
+    run: python -m src.model_functions.predict_model_basic_shape -m CORnet_S_m0003_bfs -d affectnet_resnetv2_bfs -c blue
+
     """
     parser = ArgumentParser()
     parser.add_argument("-m", "--model",
